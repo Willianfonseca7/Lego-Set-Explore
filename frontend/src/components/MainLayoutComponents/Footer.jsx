@@ -36,7 +36,10 @@ const Footer = () => {
                 className="md:h-16"
               />
             </Link>
-            <p className="p-style-small" style={{ textAlign: 'center', color: darkMode ? '#9ca3af' : '#4b5563' }} className="md:text-left">
+            <p
+              className="p-style-small md:text-left"
+              style={{ textAlign: 'center', color: darkMode ? '#9ca3af' : '#4b5563' }}
+            >
               {t.tagline}
             </p>
           </div>
