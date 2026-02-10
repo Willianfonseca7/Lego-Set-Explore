@@ -4,9 +4,14 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
-  darkMode: 'class',
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'lego-red': '#D01012',
+        'lego-yellow': '#FFD500',
+        'lego-blue': '#0055BF',
+      },
+    },
   },
   plugins: [],
 }

@@ -1,4 +1,17 @@
 services:
+  db:
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: lego_user
+      POSTGRES_PASSWORD: lego_password
+      POSTGRES_DB: lego_explorer
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/db-init:/docker-entrypoint-initdb.d
+
   backend:
     build:
       context: ./backend
@@ -6,6 +19,9 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
+      - DATABASE_URL=postgresql://lego_user:lego_password@db:5432/lego_explorer
+    depends_on:
+      - db
 
   frontend:
     build:
@@ -14,3 +30,6 @@ services:
       - "8080:80"
     depends_on:
       - backend
+
+volumes:
+  postgres_data:
