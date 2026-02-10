@@ -67,8 +67,10 @@ function LegoExplorer() {
       try {
         const res = await fetch(`${API_BASE_URL}/sets?${params}`);
         const data = await res.json();
+        console.log('API Response:', data); // Debug log
         
         if (isMounted && data.success) {
+          console.log('Setting sets:', data.data); // Debug log
           setSets(data.data);
           setPagination(data.pagination);
         }
@@ -76,6 +78,7 @@ function LegoExplorer() {
         console.error('Error fetching sets:', err);
       } finally {
         if (isMounted) {
+          console.log('Setting loading to false'); // Debug log
           setLoading(false);
         }
       }
@@ -112,20 +115,20 @@ function LegoExplorer() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
-      {/* Header with light solid color */}
-      <header className="bg-blue-100 shadow-lg border-b-4 border-blue-200">
+      {/* Header with white background */}
+      <header className="bg-white shadow-lg border-b-4 border-blue-200">
         <div className="container mx-auto px-4 py-8">
           <div className="flex items-center gap-6">
-            <div className="bg-white p-3 rounded-2xl shadow-lg transform hover:scale-105 transition-transform duration-300">
+            <div className="bg-white p-3 rounded-2xl">
               <img 
                 src="/Logo.png" 
                 alt="LEGO Logo" 
-                className="h-28 w-28 object-contain"
+                className="h-40 w-40 object-contain"
               />
             </div>
             <div className="text-gray-800">
               <h1 className="text-5xl font-bold flex items-center gap-3">
-                🧱 LEGO Set Explorer
+                LEGO Set Explorer
               </h1>
               <p className="text-gray-700 mt-3 text-lg font-medium">
                 Discover, Search, and Explore LEGO Sets from Around the World
@@ -141,23 +144,23 @@ function LegoExplorer() {
           <div className="container mx-auto px-4 py-8">
             <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
               <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-2 border-blue-200">
-                <div className="text-4xl font-extrabold text-blue-600 mb-1">{stats.total_sets?.toLocaleString()}</div>
+                <div className="text-3xl font-extrabold text-blue-600 mb-1">{stats.total_sets?.toLocaleString()}</div>
                 <div className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Total Sets</div>
               </div>
               <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-2 border-blue-200">
-                <div className="text-4xl font-extrabold text-blue-600 mb-1">{stats.total_themes}</div>
+                <div className="text-3xl font-extrabold text-blue-600 mb-1">{stats.total_themes}</div>
                 <div className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Themes</div>
               </div>
               <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-2 border-blue-200">
-                <div className="text-4xl font-extrabold text-blue-600 mb-1">{stats.total_unique_parts?.toLocaleString()}</div>
+                <div className="text-3xl font-extrabold text-blue-600 mb-1">{stats.total_unique_parts?.toLocaleString()}</div>
                 <div className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Unique Parts</div>
               </div>
               <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-2 border-blue-200">
-                <div className="text-4xl font-extrabold text-blue-600 mb-1">{stats.avg_parts_per_set?.toLocaleString()}</div>
+                <div className="text-3xl font-extrabold text-blue-600 mb-1">{stats.avg_parts_per_set?.toLocaleString()}</div>
                 <div className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Avg Parts/Set</div>
               </div>
               <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-2 border-blue-200">
-                <div className="text-4xl font-extrabold text-blue-600 mb-1">{stats.earliest_year} - {stats.latest_year}</div>
+                <div className="text-3xl font-extrabold text-blue-600 mb-1">{stats.earliest_year} - {stats.latest_year}</div>
                 <div className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Year Range</div>
               </div>
             </div>
@@ -201,7 +204,14 @@ function LegoExplorer() {
               <select
                 value={selectedTheme}
                 onChange={(e) => setSelectedTheme(e.target.value)}
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all duration-200 hover:border-gray-400"
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all duration-200 hover:border-gray-400 bg-white appearance-none cursor-pointer"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E")`,
+                  backgroundPosition: 'right 0.5rem center',
+                  backgroundRepeat: 'no-repeat',
+                  backgroundSize: '1.5em 1.5em',
+                  paddingRight: '2.5rem'
+                }}
               >
                 <option value="">All Themes</option>
                 {themes.map(theme => (
@@ -344,7 +354,7 @@ function LegoExplorer() {
                       <img
                         src={set.img_url}
                         alt={set.name}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500"
                         onError={(e) => {
                           e.target.src = 'https://via.placeholder.com/300x300?text=LEGO+Set';
                         }}
@@ -363,7 +373,7 @@ function LegoExplorer() {
                       <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-bold">🧩 {set.num_parts}</span>
                     </div>
                     <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100">
-                      <span className="inline-block bg-gradient-to-r from-blue-500 to-blue-600 text-white text-xs px-3 py-1.5 rounded-full font-bold shadow-md">
+                      <span className="inline-block bg-blue-100 text-blue-700 text-xs px-3 py-1.5 rounded-full font-bold">
                         {set.theme_name}
                       </span>
                       <span className="text-xs text-gray-500 font-medium group-hover:text-blue-600 transition-colors">View Details →</span>
@@ -516,6 +526,30 @@ function LegoExplorer() {
           </div>
         </div>
       )}
+
+      {/* Footer */}
+      <footer className="bg-white border-t-4 border-blue-200 mt-12">
+        <div className="container mx-auto px-4 py-8">
+          <div className="text-center">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <img 
+                src="/Logo.png" 
+                alt="LEGO Logo" 
+                className="h-12 w-12 object-contain"
+              />
+              <h3 className="text-2xl font-bold text-gray-800">LEGO Set Explorer</h3>
+            </div>
+            <p className="text-gray-600 mb-4 max-w-2xl mx-auto">
+              Discover, Search, and Explore LEGO Sets from Around the World
+            </p>
+            <div className="border-t border-gray-200 pt-4 mt-4">
+              <p className="text-sm text-gray-500">
+                © {new Date().getFullYear()} LEGO Set Explorer. Built with React, Node.js, PostgreSQL & Docker.
+              </p>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
