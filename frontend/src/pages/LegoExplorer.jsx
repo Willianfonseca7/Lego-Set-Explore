@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import AuthModal from '../components/AuthModal';
 
-const API_BASE_URL = 'http://localhost:3000/api';
+// Use relative path for API calls - works with proxy in dev and direct calls in production
+const API_BASE_URL = '/api';
 
 function LegoExplorer() {
   const { user, logout } = useAuth();
