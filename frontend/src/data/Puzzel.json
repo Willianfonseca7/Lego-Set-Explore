@@ -1,0 +1,194 @@
+{
+  "puzzles": [
+    {
+      "id": 1,
+      "name": "Puzzle 1",
+      "description": "Ein einfaches 3x3 Puzzle.",
+      "rows": 3,
+      "columns": 3,
+      "image": "puzzle1.png",
+      "pieces": [
+        { "id": 1, "correctPosition": [0, 0] },
+        { "id": 2, "correctPosition": [0, 1] },
+        { "id": 3, "correctPosition": [0, 2] },
+        { "id": 4, "correctPosition": [1, 0] },
+        { "id": 5, "correctPosition": [1, 1] },
+        { "id": 6, "correctPosition": [1, 2] },
+        { "id": 7, "correctPosition": [2, 0] },
+        { "id": 8, "correctPosition": [2, 1] },
+        { "id": 9, "correctPosition": [2, 2] }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Puzzle 2",
+      "description": "Ein spannendes Tier-Puzzle.",
+      "rows": 3,
+      "columns": 3,
+      "image": "puzzle2.png",
+      "pieces": [
+        { "id": 1, "correctPosition": [0, 0] },
+        { "id": 2, "correctPosition": [0, 1] },
+        { "id": 3, "correctPosition": [0, 2] },
+        { "id": 4, "correctPosition": [1, 0] },
+        { "id": 5, "correctPosition": [1, 1] },
+        { "id": 6, "correctPosition": [1, 2] },
+        { "id": 7, "correctPosition": [2, 0] },
+        { "id": 8, "correctPosition": [2, 1] },
+        { "id": 9, "correctPosition": [2, 2] }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Puzzle 3",
+      "description": "Landschafts-Puzzle.",
+      "rows": 3,
+      "columns": 3,
+      "image": "puzzle3.png",
+      "pieces": [
+        { "id": 1, "correctPosition": [0, 0] },
+        { "id": 2, "correctPosition": [0, 1] },
+        { "id": 3, "correctPosition": [0, 2] },
+        { "id": 4, "correctPosition": [1, 0] },
+        { "id": 5, "correctPosition": [1, 1] },
+        { "id": 6, "correctPosition": [1, 2] },
+        { "id": 7, "correctPosition": [2, 0] },
+        { "id": 8, "correctPosition": [2, 1] },
+        { "id": 9, "correctPosition": [2, 2] }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Puzzle 4",
+      "description": "Pflanzen und Blumen.",
+      "rows": 3,
+      "columns": 3,
+      "image": "puzzle4.png",
+      "pieces": [
+        { "id": 1, "correctPosition": [0, 0] },
+        { "id": 2, "correctPosition": [0, 1] },
+        { "id": 3, "correctPosition": [0, 2] },
+        { "id": 4, "correctPosition": [1, 0] },
+        { "id": 5, "correctPosition": [1, 1] },
+        { "id": 6, "correctPosition": [1, 2] },
+        { "id": 7, "correctPosition": [2, 0] },
+        { "id": 8, "correctPosition": [2, 1] },
+        { "id": 9, "correctPosition": [2, 2] }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Puzzle 5",
+      "description": "Auto- und Fahrzeug-Puzzle.",
+      "rows": 3,
+      "columns": 3,
+      "image": "puzzle5.png",
+      "pieces": [
+        { "id": 1, "correctPosition": [0, 0] },
+        { "id": 2, "correctPosition": [0, 1] },
+        { "id": 3, "correctPosition": [0, 2] },
+        { "id": 4, "correctPosition": [1, 0] },
+        { "id": 5, "correctPosition": [1, 1] },
+        { "id": 6, "correctPosition": [1, 2] },
+        { "id": 7, "correctPosition": [2, 0] },
+        { "id": 8, "correctPosition": [2, 1] },
+        { "id": 9, "correctPosition": [2, 2] }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Puzzle 6",
+      "description": "Weltraum-Puzzle.",
+      "rows": 3,
+      "columns": 3,
+      "image": "puzzle6.png",
+      "pieces": [
+        { "id": 1, "correctPosition": [0, 0] },
+        { "id": 2, "correctPosition": [0, 1] },
+        { "id": 3, "correctPosition": [0, 2] },
+        { "id": 4, "correctPosition": [1, 0] },
+        { "id": 5, "correctPosition": [1, 1] },
+        { "id": 6, "correctPosition": [1, 2] },
+        { "id": 7, "correctPosition": [2, 0] },
+        { "id": 8, "correctPosition": [2, 1] },
+        { "id": 9, "correctPosition": [2, 2] }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Puzzle 7",
+      "description": "Stadt- und Gebäude-Puzzle.",
+      "rows": 3,
+      "columns": 3,
+      "image": "puzzle7.png",
+      "pieces": [
+        { "id": 1, "correctPosition": [0, 0] },
+        { "id": 2, "correctPosition": [0, 1] },
+        { "id": 3, "correctPosition": [0, 2] },
+        { "id": 4, "correctPosition": [1, 0] },
+        { "id": 5, "correctPosition": [1, 1] },
+        { "id": 6, "correctPosition": [1, 2] },
+        { "id": 7, "correctPosition": [2, 0] },
+        { "id": 8, "correctPosition": [2, 1] },
+        { "id": 9, "correctPosition": [2, 2] }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Puzzle 8",
+      "description": "Meerestiere-Puzzle.",
+      "rows": 3,
+      "columns": 3,
+      "image": "puzzle8.png",
+      "pieces": [
+        { "id": 1, "correctPosition": [0, 0] },
+        { "id": 2, "correctPosition": [0, 1] },
+        { "id": 3, "correctPosition": [0, 2] },
+        { "id": 4, "correctPosition": [1, 0] },
+        { "id": 5, "correctPosition": [1, 1] },
+        { "id": 6, "correctPosition": [1, 2] },
+        { "id": 7, "correctPosition": [2, 0] },
+        { "id": 8, "correctPosition": [2, 1] },
+        { "id": 9, "correctPosition": [2, 2] }
+      ]
+    },
+    {
+      "id": 9,
+      "name": "Puzzle 9",
+      "description": "Fantasy-Puzzle.",
+      "rows": 3,
+      "columns": 3,
+      "image": "puzzle9.png",
+      "pieces": [
+        { "id": 1, "correctPosition": [0, 0] },
+        { "id": 2, "correctPosition": [0, 1] },
+        { "id": 3, "correctPosition": [0, 2] },
+        { "id": 4, "correctPosition": [1, 0] },
+        { "id": 5, "correctPosition": [1, 1] },
+        { "id": 6, "correctPosition": [1, 2] },
+        { "id": 7, "correctPosition": [2, 0] },
+        { "id": 8, "correctPosition": [2, 1] },
+        { "id": 9, "correctPosition": [2, 2] }
+      ]
+    },
+    {
+      "id": 10,
+      "name": "Puzzle 10",
+      "description": "Kunst-Puzzle.",
+      "rows": 3,
+      "columns": 3,
+      "image": "puzzle10.png",
+      "pieces": [
+        { "id": 1, "correctPosition": [0, 0] },
+        { "id": 2, "correctPosition": [0, 1] },
+        { "id": 3, "correctPosition": [0, 2] },
+        { "id": 4, "correctPosition": [1, 0] },
+        { "id": 5, "correctPosition": [1, 1] },
+        { "id": 6, "correctPosition": [1, 2] },
+        { "id": 7, "correctPosition": [2, 0] },
+        { "id": 8, "correctPosition": [2, 1] },
+        { "id": 9, "correctPosition": [2, 2] }
+      ]
+    }
+  ]
+}
