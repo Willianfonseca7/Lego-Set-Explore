@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
+import AuthModal from '../components/AuthModal';
 
 const API_BASE_URL = 'http://localhost:3000/api';
 
 function LegoExplorer() {
+  const { user, logout } = useAuth();
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const [sets, setSets] = useState([]);
   const [themes, setThemes] = useState([]);
   const [stats, setStats] = useState(null);
@@ -118,25 +122,55 @@ function LegoExplorer() {
       {/* Header with white background */}
       <header className="bg-white shadow-lg border-b-4 border-blue-200">
         <div className="container mx-auto px-4 py-8">
-          <div className="flex items-center gap-6">
-            <div className="bg-white p-3 rounded-2xl">
-              <img 
-                src="/Logo.png" 
-                alt="LEGO Logo" 
-                className="h-40 w-40 object-contain"
-              />
+          <div className="flex items-center justify-between gap-6">
+            <div className="flex items-center gap-6">
+              <div className="bg-white p-3 rounded-2xl">
+                <img 
+                  src="/Logo.png" 
+                  alt="LEGO Logo" 
+                  className="h-40 w-40 object-contain"
+                />
+              </div>
+              <div className="text-gray-800">
+                <h1 className="text-5xl font-bold flex items-center gap-3">
+                  LEGO Set Explorer
+                </h1>
+                <p className="text-gray-700 mt-3 text-lg font-medium">
+                  Discover, Search, and Explore LEGO Sets from Around the World
+                </p>
+              </div>
             </div>
-            <div className="text-gray-800">
-              <h1 className="text-5xl font-bold flex items-center gap-3">
-                LEGO Set Explorer
-              </h1>
-              <p className="text-gray-700 mt-3 text-lg font-medium">
-                Discover, Search, and Explore LEGO Sets from Around the World
-              </p>
+            
+            {/* Auth Section */}
+            <div className="flex items-center gap-4">
+              {user ? (
+                <div className="flex items-center gap-4">
+                  <div className="text-right">
+                    <p className="text-sm font-bold text-gray-700">Welcome back!</p>
+                    <p className="text-lg font-bold text-blue-600">{user.username}</p>
+                  </div>
+                  <button
+                    onClick={logout}
+                    className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-xl transition-all duration-200"
+                  >
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setShowAuthModal(true)}
+                  className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-xl transition-all duration-200 shadow-lg"
+                >
+                  Login / Sign Up
+                </button>
+              )}
             </div>
           </div>
         </div>
       </header>
+
+      {/* Auth Modal */}
+      <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
 
       {/* Stats Banner with consistent blue theme */}
       {stats && (

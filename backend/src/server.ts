@@ -8,6 +8,8 @@ import { pool } from './db/index.js';
 import setsRouter from './routes/sets.js';
 import themesRouter from './routes/themes.js';
 import statsRouter from './routes/stats.js';
+import authRouter from './routes/auth.js';
+import collectionsRouter from './routes/collections.js';
 
 const app = express();
 
@@ -41,6 +43,8 @@ app.get('/health/db', async (req: Request, res: Response) => {
 app.use('/api/sets', setsRouter);
 app.use('/api/themes', themesRouter);
 app.use('/api/stats', statsRouter);
+app.use('/api/auth', authRouter);
+app.use('/api/collections', collectionsRouter);
 
 // 404 handler
 app.use((req: Request, res: Response) => {
