@@ -16,8 +16,9 @@ import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined
 import { ThemeContext } from '../../context/ThemeContext';
 import { LanguageContext } from '../../context/LanguageContext';
 import { translations } from '../../translations/translations';
+import { login } from '../../api/auth';
 
-export default function LoginModal({ open, onClose, onSwitchToRegister }) {
+export default function LoginModal({ open, onClose, onSwitchToRegister, onAuthSuccess }) {
   const { darkMode } = useContext(ThemeContext);
   const { language } = useContext(LanguageContext);
   const t = translations[language].auth;
@@ -25,12 +26,22 @@ export default function LoginModal({ open, onClose, onSwitchToRegister }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // TODO: Implement actual login logic
-    console.log('Login:', { email, password });
-    onClose();
+    setError('');
+    setSubmitting(true);
+    try {
+      const user = await login({ email: email.trim(), password });
+      onAuthSuccess?.(user);
+      onClose();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t.somethingWentWrong || 'Fehler');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -140,6 +151,7 @@ export default function LoginModal({ open, onClose, onSwitchToRegister }) {
             type="submit"
             fullWidth
             variant="contained"
+            disabled={submitting}
             sx={{
               mt: 3,
               mb: 2,
@@ -159,8 +171,14 @@ export default function LoginModal({ open, onClose, onSwitchToRegister }) {
               },
             }}
           >
-            {t.signIn}
+            {submitting ? t.loading || 'Bitte warten...' : t.signIn}
           </Button>
+
+          {error && (
+            <Typography color="error" sx={{ textAlign: 'center', mt: 1 }}>
+              {error}
+            </Typography>
+          )}
 
           <Box sx={{ textAlign: 'center', mt: 2 }}>
             <Typography

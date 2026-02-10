@@ -35,6 +35,7 @@ import { translations } from '../../translations/translations';
 import categoryDataBilingual from '../../data/categoryData.json';
 import LoginModal from './LoginModal';
 import RegisterModal from './RegisterModal';
+import { getProfile, logout } from '../../api/auth';
 
 export default function Navbar() {
   const { darkMode, toggleDarkMode } = useContext(ThemeContext);
@@ -46,6 +47,7 @@ export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [openLoginModal, setOpenLoginModal] = useState(false);
   const [openRegisterModal, setOpenRegisterModal] = useState(false);
+  const [user, setUser] = useState(null);
   const [languageAnchorEl, setLanguageAnchorEl] = useState(null);
   const [productsAnchorEl, setProductsAnchorEl] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -55,6 +57,12 @@ export default function Navbar() {
   const categoryData = categoryDataBilingual[language];
   const openLanguageMenu = Boolean(languageAnchorEl);
   const openProductsMenu = Boolean(productsAnchorEl);
+
+  useEffect(() => {
+    getProfile()
+      .then((profile) => setUser(profile))
+      .catch(() => setUser(null));
+  }, []);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -390,13 +398,29 @@ export default function Navbar() {
                 </Badge>
               </IconButton>
 
-              <IconButton
-                onClick={() => setOpenLoginModal(true)}
-                color="inherit"
-                aria-label="Sign in"
-              >
-                <PersonOutlineIcon />
-              </IconButton>
+              {user ? (
+                <Button
+                  onClick={async () => {
+                    try {
+                      await logout();
+                    } finally {
+                      setUser(null);
+                    }
+                  }}
+                  color="inherit"
+                  sx={{ textTransform: 'none', fontWeight: 500 }}
+                >
+                  {t.auth?.logout || 'Abmelden'}
+                </Button>
+              ) : (
+                <IconButton
+                  onClick={() => setOpenLoginModal(true)}
+                  color="inherit"
+                  aria-label="Sign in"
+                >
+                  <PersonOutlineIcon />
+                </IconButton>
+              )}
 
               <IconButton
                 onClick={toggleDarkMode}
@@ -440,14 +464,31 @@ export default function Navbar() {
                 <ShoppingBagOutlinedIcon />
               </Badge>
             </IconButton>
-            <IconButton
-              onClick={() => setOpenLoginModal(true)}
-              color="inherit"
-              size="small"
-              aria-label="Sign in"
-            >
-              <PersonOutlineIcon />
-            </IconButton>
+            {user ? (
+              <Button
+                onClick={async () => {
+                  try {
+                    await logout();
+                  } finally {
+                    setUser(null);
+                  }
+                }}
+                color="inherit"
+                size="small"
+                sx={{ textTransform: 'none', fontWeight: 500 }}
+              >
+                {t.auth?.logout || 'Abmelden'}
+              </Button>
+            ) : (
+              <IconButton
+                onClick={() => setOpenLoginModal(true)}
+                color="inherit"
+                size="small"
+                aria-label="Sign in"
+              >
+                <PersonOutlineIcon />
+              </IconButton>
+            )}
             <IconButton
               onClick={handleLanguageMenuOpen}
               color="inherit"
@@ -724,6 +765,10 @@ export default function Navbar() {
       open={openLoginModal}
       onClose={() => setOpenLoginModal(false)}
       onSwitchToRegister={handleSwitchToRegister}
+      onAuthSuccess={(profile) => {
+        setUser(profile);
+        setOpenLoginModal(false);
+      }}
     />
 
     {/* Register Modal */}
@@ -731,6 +776,10 @@ export default function Navbar() {
       open={openRegisterModal}
       onClose={() => setOpenRegisterModal(false)}
       onSwitchToLogin={handleSwitchToLogin}
+      onAuthSuccess={(profile) => {
+        setUser(profile);
+        setOpenRegisterModal(false);
+      }}
     />
     </>
   );
