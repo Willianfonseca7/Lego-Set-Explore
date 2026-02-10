@@ -65,3 +65,29 @@ CREATE INDEX idx_themes_name ON themes(name);
 CREATE INDEX idx_inventory_parts_part_num ON inventory_parts(part_num);
 CREATE INDEX idx_inventory_parts_color_id ON inventory_parts(color_id);
 CREATE INDEX idx_inventories_set_num ON inventories(set_num);
+
+-- Users table for authentication
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- User collections (tracks which sets users own)
+CREATE TABLE user_collections (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    set_num VARCHAR(50) NOT NULL REFERENCES sets(set_num) ON DELETE CASCADE,
+    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    notes TEXT,
+    UNIQUE(user_id, set_num)
+);
+
+-- Indexes for user tables
+CREATE INDEX idx_users_email ON users(email);
+CREATE INDEX idx_users_username ON users(username);
+CREATE INDEX idx_user_collections_user_id ON user_collections(user_id);
+CREATE INDEX idx_user_collections_set_num ON user_collections(set_num);
