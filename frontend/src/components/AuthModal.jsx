@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 
-function AuthModal({ isOpen, onClose }) {
-  const [isLogin, setIsLogin] = useState(true);
+function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
+  const [isLogin, setIsLogin] = useState(initialMode === 'login');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -10,6 +10,10 @@ function AuthModal({ isOpen, onClose }) {
   const [loading, setLoading] = useState(false);
 
   const { login, register } = useAuth();
+
+  useEffect(() => {
+    setIsLogin(initialMode === 'login');
+  }, [initialMode]);
 
   if (!isOpen) return null;
 
@@ -48,7 +52,7 @@ function AuthModal({ isOpen, onClose }) {
       <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full m-4" onClick={(e) => e.stopPropagation()}>
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-3xl font-bold text-gray-800">
-            {isLogin ? 'Login' : 'Sign Up'}
+            {isLogin ? 'Sign In' : 'Sign Up'}
           </h2>
           <button
             onClick={onClose}
@@ -73,7 +77,7 @@ function AuthModal({ isOpen, onClose }) {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all"
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-red-200 focus:border-red-500 transition-all"
               required
             />
           </div>
@@ -87,7 +91,7 @@ function AuthModal({ isOpen, onClose }) {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all"
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-red-200 focus:border-red-500 transition-all"
                 required
               />
             </div>
@@ -101,7 +105,7 @@ function AuthModal({ isOpen, onClose }) {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all"
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-red-200 focus:border-red-500 transition-all"
               required
               minLength="6"
             />
@@ -113,18 +117,18 @@ function AuthModal({ isOpen, onClose }) {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? 'Please wait...' : (isLogin ? 'Login' : 'Sign Up')}
+            {loading ? 'Please wait...' : (isLogin ? 'Sign In' : 'Sign Up')}
           </button>
         </form>
 
         <div className="mt-6 text-center">
           <button
             onClick={switchMode}
-            className="text-blue-500 hover:text-blue-700 font-medium"
+            className="text-red-600 hover:text-red-700 font-medium"
           >
-            {isLogin ? "Don't have an account? Sign up" : 'Already have an account? Login'}
+            {isLogin ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
           </button>
         </div>
       </div>

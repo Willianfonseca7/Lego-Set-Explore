@@ -7,6 +7,7 @@ const API_BASE_URL = 'http://localhost:3000/api';
 function LegoExplorer() {
   const { user, logout } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authModalMode, setAuthModalMode] = useState('login');
   const [sets, setSets] = useState([]);
   const [themes, setThemes] = useState([]);
   const [stats, setStats] = useState(null);
@@ -124,19 +125,19 @@ function LegoExplorer() {
         <div className="container mx-auto px-4 py-8">
           <div className="flex items-center justify-between gap-6">
             <div className="flex items-center gap-6">
-              <div className="bg-white p-3 rounded-2xl">
+              <div className="bg-white p-4 rounded-2xl">
                 <img 
                   src="/Logo.png" 
-                  alt="LEGO Logo" 
+                  alt="Lego Logo" 
                   className="h-40 w-40 object-contain"
                 />
               </div>
               <div className="text-gray-800">
-                <h1 className="text-5xl font-bold flex items-center gap-3">
-                  LEGO Set Explorer
+                <h1 className="text-5xl font-bold">
+                  Lego Set Explorer
                 </h1>
                 <p className="text-gray-700 mt-3 text-lg font-medium">
-                  Discover, Search, and Explore LEGO Sets from Around the World
+                  Discover, Search, and Explore Lego Sets from Around the World
                 </p>
               </div>
             </div>
@@ -147,7 +148,7 @@ function LegoExplorer() {
                 <div className="flex items-center gap-4">
                   <div className="text-right">
                     <p className="text-sm font-bold text-gray-700">Welcome back!</p>
-                    <p className="text-lg font-bold text-blue-600">{user.username}</p>
+                    <p className="text-lg font-bold text-red-600">{user.username}</p>
                   </div>
                   <button
                     onClick={logout}
@@ -157,12 +158,26 @@ function LegoExplorer() {
                   </button>
                 </div>
               ) : (
-                <button
-                  onClick={() => setShowAuthModal(true)}
-                  className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-xl transition-all duration-200 shadow-lg"
-                >
-                  Login / Sign Up
-                </button>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => {
+                      setShowAuthModal(true);
+                      setAuthModalMode('login');
+                    }}
+                    className="bg-white hover:bg-gray-100 text-gray-800 font-bold py-3 px-8 rounded-xl transition-all duration-200 border-2 border-gray-300"
+                  >
+                    Sign In
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowAuthModal(true);
+                      setAuthModalMode('signup');
+                    }}
+                    className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-xl transition-all duration-200"
+                  >
+                    Sign Up
+                  </button>
+                </div>
               )}
             </div>
           </div>
@@ -170,32 +185,36 @@ function LegoExplorer() {
       </header>
 
       {/* Auth Modal */}
-      <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
+      <AuthModal 
+        isOpen={showAuthModal} 
+        onClose={() => setShowAuthModal(false)} 
+        initialMode={authModalMode}
+      />
 
-      {/* Stats Banner with consistent blue theme */}
+      {/* Stats Banner */}
       {stats && (
-        <div className="bg-white shadow-lg border-b-4 border-blue-100">
+        <div className="bg-white shadow-lg border-b-4 border-red-100">
           <div className="container mx-auto px-4 py-8">
             <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
-              <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-2 border-blue-200">
-                <div className="text-3xl font-extrabold text-blue-600 mb-1">{stats.total_sets?.toLocaleString()}</div>
-                <div className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Total Sets</div>
+              <div className="bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-2 border-red-200">
+                <div className="text-2xl font-bold text-red-600 mb-1">{stats.total_sets?.toLocaleString()}</div>
+                <div className="text-xs font-semibold text-gray-700 uppercase tracking-wide">Total Sets</div>
               </div>
-              <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-2 border-blue-200">
-                <div className="text-3xl font-extrabold text-blue-600 mb-1">{stats.total_themes}</div>
-                <div className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Themes</div>
+              <div className="bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-2 border-red-200">
+                <div className="text-2xl font-bold text-red-600 mb-1">{stats.total_themes}</div>
+                <div className="text-xs font-semibold text-gray-700 uppercase tracking-wide">Themes</div>
               </div>
-              <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-2 border-blue-200">
-                <div className="text-3xl font-extrabold text-blue-600 mb-1">{stats.total_unique_parts?.toLocaleString()}</div>
-                <div className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Unique Parts</div>
+              <div className="bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-2 border-red-200">
+                <div className="text-2xl font-bold text-red-600 mb-1">{stats.total_unique_parts?.toLocaleString()}</div>
+                <div className="text-xs font-semibold text-gray-700 uppercase tracking-wide">Unique Parts</div>
               </div>
-              <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-2 border-blue-200">
-                <div className="text-3xl font-extrabold text-blue-600 mb-1">{stats.avg_parts_per_set?.toLocaleString()}</div>
-                <div className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Avg Parts/Set</div>
+              <div className="bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-2 border-red-200">
+                <div className="text-2xl font-bold text-red-600 mb-1">{stats.avg_parts_per_set?.toLocaleString()}</div>
+                <div className="text-xs font-semibold text-gray-700 uppercase tracking-wide">Avg Parts/Set</div>
               </div>
-              <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-2 border-blue-200">
-                <div className="text-3xl font-extrabold text-blue-600 mb-1">{stats.earliest_year} - {stats.latest_year}</div>
-                <div className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Year Range</div>
+              <div className="bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-2 border-red-200">
+                <div className="text-2xl font-bold text-red-600 mb-1">{stats.earliest_year} - {stats.latest_year}</div>
+                <div className="text-xs font-semibold text-gray-700 uppercase tracking-wide">Year Range</div>
               </div>
             </div>
           </div>
@@ -567,17 +586,17 @@ function LegoExplorer() {
             <div className="flex items-center justify-center gap-3 mb-4">
               <img 
                 src="/Logo.png" 
-                alt="LEGO Logo" 
+                alt="Lego Logo" 
                 className="h-12 w-12 object-contain"
               />
-              <h3 className="text-2xl font-bold text-gray-800">LEGO Set Explorer</h3>
+              <h3 className="text-2xl font-bold text-gray-800">Lego Set Explorer</h3>
             </div>
             <p className="text-gray-600 mb-4 max-w-2xl mx-auto">
-              Discover, Search, and Explore LEGO Sets from Around the World
+              Discover, Search, and Explore Lego Sets from Around the World
             </p>
             <div className="border-t border-gray-200 pt-4 mt-4">
               <p className="text-sm text-gray-500">
-                © {new Date().getFullYear()} LEGO Set Explorer. Built with React, Node.js, PostgreSQL & Docker.
+                © {new Date().getFullYear()} Lego Set Explorer. Built with React, Node.js, PostgreSQL & Docker.
               </p>
             </div>
           </div>
