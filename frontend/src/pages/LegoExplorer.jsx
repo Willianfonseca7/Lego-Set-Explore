@@ -45,36 +45,47 @@ function LegoExplorer() {
       .catch(err => console.error('Error fetching stats:', err));
   }, []);
 
-  // Fetch sets with filters
+  // Fetch sets with filters - Fixed to avoid setState in effect warning
   useEffect(() => {
-    setLoading(true);
-    const params = new URLSearchParams({
-      page: currentPage.toString(),
-      limit: '20',
-      sort_by: sortBy,
-      sort_order: sortOrder,
-    });
+    let isMounted = true;
+    
+    const fetchSets = async () => {
+      const params = new URLSearchParams({
+        page: currentPage.toString(),
+        limit: '20',
+        sort_by: sortBy,
+        sort_order: sortOrder,
+      });
 
-    if (searchTerm) params.append('search', searchTerm);
-    if (selectedTheme) params.append('theme_id', selectedTheme);
-    if (yearFrom) params.append('year_from', yearFrom);
-    if (yearTo) params.append('year_to', yearTo);
-    if (minParts) params.append('min_parts', minParts);
-    if (maxParts) params.append('max_parts', maxParts);
+      if (searchTerm) params.append('search', searchTerm);
+      if (selectedTheme) params.append('theme_id', selectedTheme);
+      if (yearFrom) params.append('year_from', yearFrom);
+      if (yearTo) params.append('year_to', yearTo);
+      if (minParts) params.append('min_parts', minParts);
+      if (maxParts) params.append('max_parts', maxParts);
 
-    fetch(`${API_BASE_URL}/sets?${params}`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
+      try {
+        const res = await fetch(`${API_BASE_URL}/sets?${params}`);
+        const data = await res.json();
+        
+        if (isMounted && data.success) {
           setSets(data.data);
           setPagination(data.pagination);
         }
-        setLoading(false);
-      })
-      .catch(err => {
+      } catch (err) {
         console.error('Error fetching sets:', err);
-        setLoading(false);
-      });
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchSets();
+    
+    return () => {
+      isMounted = false;
+    };
   }, [searchTerm, selectedTheme, yearFrom, yearTo, minParts, maxParts, sortBy, sortOrder, currentPage]);
 
   // Fetch set details
@@ -100,21 +111,23 @@ function LegoExplorer() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-red-50">
-      {/* Header */}
-      <header className="bg-gradient-to-r from-blue-100 to-red-100 shadow-lg">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
+      {/* Header with light solid color */}
+      <header className="bg-blue-100 shadow-lg border-b-4 border-blue-200">
         <div className="container mx-auto px-4 py-8">
           <div className="flex items-center gap-6">
-            <img 
-              src="/Logo.png" 
-              alt="LEGO Logo" 
-              className="h-32 w-32 object-contain flex-shrink-0"
-            />
-            <div>
-              <h1 className="text-5xl font-bold text-gray-800 flex items-center gap-3">
-                LEGO Set Explorer
+            <div className="bg-white p-3 rounded-2xl shadow-lg transform hover:scale-105 transition-transform duration-300">
+              <img 
+                src="/Logo.png" 
+                alt="LEGO Logo" 
+                className="h-28 w-28 object-contain"
+              />
+            </div>
+            <div className="text-gray-800">
+              <h1 className="text-5xl font-bold flex items-center gap-3">
+                🧱 LEGO Set Explorer
               </h1>
-              <p className="text-gray-700 mt-3 text-lg">
+              <p className="text-gray-700 mt-3 text-lg font-medium">
                 Discover, Search, and Explore LEGO Sets from Around the World
               </p>
             </div>
@@ -122,68 +135,73 @@ function LegoExplorer() {
         </div>
       </header>
 
-      {/* Stats Banner */}
+      {/* Stats Banner with consistent blue theme */}
       {stats && (
-        <div className="bg-white shadow-md border-b">
-          <div className="container mx-auto px-4 py-6">
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
-              <div className="bg-red-50 p-4 rounded-lg">
-                <div className="text-3xl font-bold text-red-600">{stats.total_sets?.toLocaleString()}</div>
-                <div className="text-sm text-gray-600 mt-1">Total Sets</div>
+        <div className="bg-white shadow-lg border-b-4 border-blue-100">
+          <div className="container mx-auto px-4 py-8">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
+              <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-2 border-blue-200">
+                <div className="text-4xl font-extrabold text-blue-600 mb-1">{stats.total_sets?.toLocaleString()}</div>
+                <div className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Total Sets</div>
               </div>
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <div className="text-3xl font-bold text-blue-600">{stats.total_themes}</div>
-                <div className="text-sm text-gray-600 mt-1">Themes</div>
+              <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-2 border-blue-200">
+                <div className="text-4xl font-extrabold text-blue-600 mb-1">{stats.total_themes}</div>
+                <div className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Themes</div>
               </div>
-              <div className="bg-green-50 p-4 rounded-lg">
-                <div className="text-3xl font-bold text-green-600">{stats.total_unique_parts?.toLocaleString()}</div>
-                <div className="text-sm text-gray-600 mt-1">Unique Parts</div>
+              <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-2 border-blue-200">
+                <div className="text-4xl font-extrabold text-blue-600 mb-1">{stats.total_unique_parts?.toLocaleString()}</div>
+                <div className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Unique Parts</div>
               </div>
-              <div className="bg-purple-50 p-4 rounded-lg">
-                <div className="text-3xl font-bold text-purple-600">{stats.avg_parts_per_set?.toLocaleString()}</div>
-                <div className="text-sm text-gray-600 mt-1">Avg Parts per Set</div>
+              <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-2 border-blue-200">
+                <div className="text-4xl font-extrabold text-blue-600 mb-1">{stats.avg_parts_per_set?.toLocaleString()}</div>
+                <div className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Avg Parts/Set</div>
               </div>
-              <div className="bg-orange-50 p-4 rounded-lg">
-                <div className="text-3xl font-bold text-orange-600">{stats.earliest_year} - {stats.latest_year}</div>
-                <div className="text-sm text-gray-600 mt-1">Year Range</div>
+              <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-2 border-blue-200">
+                <div className="text-4xl font-extrabold text-blue-600 mb-1">{stats.earliest_year} - {stats.latest_year}</div>
+                <div className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Year Range</div>
               </div>
             </div>
           </div>
         </div>
       )}
 
-      <div className="container mx-auto px-4 py-8">
-        {/* Filters */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-bold text-gray-800">🔍 Search & Filter Options</h2>
-            <span className="text-sm text-gray-500">
-              {pagination && `${pagination.total} sets found`}
-            </span>
+      <div className="container mx-auto px-4 py-10">
+        {/* Filters with enhanced styling */}
+        <div className="bg-white rounded-2xl shadow-xl p-8 mb-8 border border-gray-100">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-3xl font-bold text-gray-800 flex items-center gap-3">
+              <span className="text-4xl">🔍</span>
+              Search & Filter Options
+            </h2>
+            <div className="bg-blue-50 px-4 py-2 rounded-full border-2 border-blue-200">
+              <span className="text-sm font-bold text-blue-700">
+                {pagination ? `${pagination.total} sets found` : 'Loading...'}
+              </span>
+            </div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                🔎 Search by Name
+              <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-2">
+                <span className="text-lg">🔎</span> Search by Name
               </label>
               <input
                 type="text"
                 placeholder="e.g., Millennium Falcon..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all duration-200 hover:border-gray-400"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                🎨 Theme Category
+              <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-2">
+                <span className="text-lg">🎨</span> Theme Category
               </label>
               <select
                 value={selectedTheme}
                 onChange={(e) => setSelectedTheme(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all duration-200 hover:border-gray-400"
               >
                 <option value="">All Themes</option>
                 {themes.map(theme => (
@@ -195,65 +213,72 @@ function LegoExplorer() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                📅 Year From
+              <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-2">
+                <span className="text-lg">📅</span> Year From
               </label>
               <input
                 type="number"
                 placeholder="e.g., 2020"
                 value={yearFrom}
                 onChange={(e) => setYearFrom(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all duration-200 hover:border-gray-400"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                📅 Year To
+              <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-2">
+                <span className="text-lg">📅</span> Year To
               </label>
               <input
                 type="number"
                 placeholder="e.g., 2024"
                 value={yearTo}
                 onChange={(e) => setYearTo(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all duration-200 hover:border-gray-400"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                🧩 Min. Parts
+              <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-2">
+                <span className="text-lg">🧩</span> Min. Parts
               </label>
               <input
                 type="number"
                 placeholder="e.g., 100"
                 value={minParts}
                 onChange={(e) => setMinParts(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all duration-200 hover:border-gray-400"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                🧩 Max. Parts
+              <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-2">
+                <span className="text-lg">🧩</span> Max. Parts
               </label>
               <input
                 type="number"
                 placeholder="e.g., 5000"
                 value={maxParts}
                 onChange={(e) => setMaxParts(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all duration-200 hover:border-gray-400"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                📊 Sort By
+              <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-2">
+                <span className="text-lg">📊</span> Sort By
               </label>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all duration-200 hover:border-gray-400 bg-white appearance-none cursor-pointer"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E")`,
+                  backgroundPosition: 'right 0.5rem center',
+                  backgroundRepeat: 'no-repeat',
+                  backgroundSize: '1.5em 1.5em',
+                  paddingRight: '2.5rem'
+                }}
               >
                 <option value="year">Year</option>
                 <option value="name">Name</option>
@@ -262,13 +287,20 @@ function LegoExplorer() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                ↕️ Sort Order
+              <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-2">
+                <span className="text-lg">↕️</span> Sort Order
               </label>
               <select
                 value={sortOrder}
                 onChange={(e) => setSortOrder(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all duration-200 hover:border-gray-400 bg-white appearance-none cursor-pointer"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E")`,
+                  backgroundPosition: 'right 0.5rem center',
+                  backgroundRepeat: 'no-repeat',
+                  backgroundSize: '1.5em 1.5em',
+                  paddingRight: '2.5rem'
+                }}
               >
                 <option value="DESC">Newest First</option>
                 <option value="ASC">Oldest First</option>
@@ -276,25 +308,27 @@ function LegoExplorer() {
             </div>
           </div>
 
-          <div className="mt-6 flex gap-3 items-center">
+          <div className="mt-8 flex flex-wrap gap-4 items-center">
             <button
               onClick={resetFilters}
-              className="px-6 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition font-medium"
+              className="px-8 py-3 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-xl hover:from-gray-700 hover:to-gray-800 transition-all duration-200 font-bold shadow-lg hover:shadow-xl transform hover:scale-105"
             >
-              🔄 Reset Filters
+              🔄 Reset All Filters
             </button>
-            <div className="text-sm text-gray-500 italic">
-              Tip: Try searching for "star" or filter by "Star Wars" theme
+            <div className="flex-1 bg-blue-50 px-4 py-3 rounded-xl border-2 border-blue-200">
+              <p className="text-sm text-blue-800 font-medium">
+                💡 <strong>Tip:</strong> Try searching for "star" or filter by "Star Wars" theme to see results!
+              </p>
             </div>
           </div>
         </div>
 
-        {/* Sets Grid */}
+        {/* Sets Grid with enhanced cards */}
         {loading ? (
-          <div className="text-center py-16">
-            <div className="inline-block animate-spin rounded-full h-16 w-16 border-4 border-red-500 border-t-transparent"></div>
-            <p className="mt-4 text-gray-600 text-lg">Loading LEGO sets from database...</p>
-            <p className="mt-2 text-gray-500 text-sm">Executing optimized SQL queries with indexes</p>
+          <div className="text-center py-20 bg-white rounded-2xl shadow-lg">
+            <div className="inline-block animate-spin rounded-full h-20 w-20 border-4 border-red-500 border-t-transparent"></div>
+            <p className="mt-6 text-gray-700 text-xl font-bold">Loading LEGO sets from database...</p>
+            <p className="mt-2 text-gray-500 text-sm">Executing optimized SQL queries with indexes ⚡</p>
           </div>
         ) : (
           <>
@@ -302,62 +336,66 @@ function LegoExplorer() {
               {sets.map(set => (
                 <div
                   key={set.id}
-                  className="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow cursor-pointer overflow-hidden"
+                  className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer overflow-hidden group transform hover:-translate-y-2 border border-gray-100"
                   onClick={() => fetchSetDetails(set.set_num)}
                 >
-                  <div className="aspect-square bg-gray-100 flex items-center justify-center overflow-hidden">
+                  <div className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center overflow-hidden relative">
                     {set.img_url ? (
                       <img
                         src={set.img_url}
                         alt={set.name}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                         onError={(e) => {
-                          e.target.src = 'https://via.placeholder.com/300x300?text=LEGO';
+                          e.target.src = 'https://via.placeholder.com/300x300?text=LEGO+Set';
                         }}
                       />
                     ) : (
-                      <div className="text-6xl">🧱</div>
+                      <div className="text-7xl group-hover:scale-110 transition-transform duration-300">🧱</div>
                     )}
-                  </div>
-                  <div className="p-4">
-                    <div className="text-xs text-gray-500 mb-1 font-mono">#{set.set_num}</div>
-                    <h3 className="font-bold text-gray-800 mb-2 line-clamp-2 h-12">{set.name}</h3>
-                    <div className="flex justify-between items-center text-sm mt-3">
-                      <span className="text-blue-600 font-medium">📅 {set.year}</span>
-                      <span className="text-gray-600">🧩 {set.num_parts} parts</span>
+                    <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full shadow-lg">
+                      <span className="text-xs font-bold text-gray-700">#{set.set_num}</span>
                     </div>
-                    <div className="mt-3 flex items-center justify-between">
-                      <span className="inline-block bg-red-100 text-red-800 text-xs px-2 py-1 rounded font-medium">
+                  </div>
+                  <div className="p-5">
+                    <h3 className="font-bold text-gray-800 mb-3 line-clamp-2 h-12 text-lg group-hover:text-blue-600 transition-colors">{set.name}</h3>
+                    <div className="flex justify-between items-center text-sm mt-4 mb-3">
+                      <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-bold">📅 {set.year}</span>
+                      <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-bold">🧩 {set.num_parts}</span>
+                    </div>
+                    <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100">
+                      <span className="inline-block bg-gradient-to-r from-blue-500 to-blue-600 text-white text-xs px-3 py-1.5 rounded-full font-bold shadow-md">
                         {set.theme_name}
                       </span>
-                      <span className="text-xs text-gray-500">Click for details</span>
+                      <span className="text-xs text-gray-500 font-medium group-hover:text-blue-600 transition-colors">View Details →</span>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
 
-            {/* Pagination */}
+            {/* Pagination with enhanced styling */}
             {pagination && pagination.totalPages > 1 && (
-              <div className="mt-8 flex flex-col items-center gap-4">
-                <div className="text-sm text-gray-600">
-                  Showing {((currentPage - 1) * 20) + 1} - {Math.min(currentPage * 20, pagination.total)} of {pagination.total} sets
+              <div className="mt-12 flex flex-col items-center gap-5">
+                <div className="bg-white px-6 py-3 rounded-full shadow-md border-2 border-blue-200">
+                  <span className="text-sm font-bold text-gray-700">
+                    Showing <span className="text-blue-600">{((currentPage - 1) * 20) + 1}</span> - <span className="text-blue-600">{Math.min(currentPage * 20, pagination.total)}</span> of <span className="text-blue-600">{pagination.total}</span> sets
+                  </span>
                 </div>
-                <div className="flex justify-center gap-2">
+                <div className="flex justify-center gap-3">
                   <button
                     onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                     disabled={currentPage === 1}
-                    className="px-6 py-2 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                    className="px-8 py-3 bg-white border-2 border-gray-300 rounded-xl hover:bg-gray-50 hover:border-blue-400 disabled:opacity-40 disabled:cursor-not-allowed font-bold transition-all duration-200 shadow-md hover:shadow-lg disabled:hover:shadow-md"
                   >
                     ← Previous
                   </button>
-                  <div className="flex items-center px-6 bg-red-600 text-white rounded-md font-medium">
+                  <div className="flex items-center px-8 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl font-bold shadow-lg">
                     Page {currentPage} of {pagination.totalPages}
                   </div>
                   <button
                     onClick={() => setCurrentPage(p => Math.min(pagination.totalPages, p + 1))}
                     disabled={currentPage === pagination.totalPages}
-                    className="px-6 py-2 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                    className="px-8 py-3 bg-white border-2 border-gray-300 rounded-xl hover:bg-gray-50 hover:border-blue-400 disabled:opacity-40 disabled:cursor-not-allowed font-bold transition-all duration-200 shadow-md hover:shadow-lg disabled:hover:shadow-md"
                   >
                     Next →
                   </button>
