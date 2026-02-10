@@ -1,7 +1,7 @@
 import express, { type Request, type Response } from 'express';
 import cors from 'cors';
-import { PORT } from './config/env';
-import { logger } from './lib/logger';
+import { PORT } from './config/env.js';
+import { logger } from './lib/logger.js';
 
 const app = express();
 
