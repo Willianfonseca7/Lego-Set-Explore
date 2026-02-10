@@ -1,5 +1,1 @@
-// Features module
-// This directory will contain feature-specific modules
-
-export {};
-
+export { authRouter } from './auth/auth.router.js';
