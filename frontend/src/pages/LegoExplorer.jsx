@@ -207,7 +207,6 @@ function LegoExplorer() {
         <div className="bg-white rounded-2xl shadow-xl p-8 mb-8 border border-gray-100">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-3xl font-bold text-gray-800 flex items-center gap-3">
-              <span className="text-4xl">🔍</span>
               Search & Filter Options
             </h2>
             <div className="bg-blue-50 px-4 py-2 rounded-full border-2 border-blue-200">
@@ -233,7 +232,7 @@ function LegoExplorer() {
 
             <div>
               <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-2">
-                <span className="text-lg">🎨</span> Theme Category
+                Theme Category
               </label>
               <select
                 value={selectedTheme}
@@ -258,7 +257,7 @@ function LegoExplorer() {
 
             <div>
               <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-2">
-                <span className="text-lg">📅</span> Year From
+                Year From
               </label>
               <input
                 type="number"
@@ -271,7 +270,7 @@ function LegoExplorer() {
 
             <div>
               <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-2">
-                <span className="text-lg">📅</span> Year To
+                Year To
               </label>
               <input
                 type="number"
@@ -284,7 +283,7 @@ function LegoExplorer() {
 
             <div>
               <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-2">
-                <span className="text-lg">🧩</span> Min. Parts
+                Min. Parts
               </label>
               <input
                 type="number"
@@ -297,7 +296,7 @@ function LegoExplorer() {
 
             <div>
               <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-2">
-                <span className="text-lg">🧩</span> Max. Parts
+                Max. Parts
               </label>
               <input
                 type="number"
@@ -310,7 +309,7 @@ function LegoExplorer() {
 
             <div>
               <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-2">
-                <span className="text-lg">📊</span> Sort By
+                Sort By
               </label>
               <select
                 value={sortBy}
@@ -332,7 +331,7 @@ function LegoExplorer() {
 
             <div>
               <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-2">
-                <span className="text-lg">↕️</span> Sort Order
+                Sort Order
               </label>
               <select
                 value={sortOrder}
@@ -357,11 +356,11 @@ function LegoExplorer() {
               onClick={resetFilters}
               className="px-8 py-3 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-xl hover:from-gray-700 hover:to-gray-800 transition-all duration-200 font-bold shadow-lg hover:shadow-xl transform hover:scale-105"
             >
-              🔄 Reset All Filters
+              Reset All Filters
             </button>
             <div className="flex-1 bg-blue-50 px-4 py-3 rounded-xl border-2 border-blue-200">
               <p className="text-sm text-blue-800 font-medium">
-                💡 <strong>Tip:</strong> Try searching for "star" or filter by "Star Wars" theme to see results!
+                <strong>Tip:</strong> Try searching for "star" or filter by "Star Wars" theme to see results!
               </p>
             </div>
           </div>
@@ -403,8 +402,8 @@ function LegoExplorer() {
                   <div className="p-5">
                     <h3 className="font-bold text-gray-800 mb-3 line-clamp-2 h-12 text-lg group-hover:text-blue-600 transition-colors">{set.name}</h3>
                     <div className="flex justify-between items-center text-sm mt-4 mb-3">
-                      <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-bold">📅 {set.year}</span>
-                      <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-bold">🧩 {set.num_parts}</span>
+                      <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-bold">{set.year}</span>
+                      <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-bold">{set.num_parts}</span>
                     </div>
                     <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100">
                       <span className="inline-block bg-blue-100 text-blue-700 text-xs px-3 py-1.5 rounded-full font-bold">
@@ -493,19 +492,19 @@ function LegoExplorer() {
                     </div>
                     <div className="bg-gray-50 p-3 rounded">
                       <span className="text-gray-600 text-sm">Release Year:</span>
-                      <div className="font-semibold text-lg">📅 {selectedSet.year}</div>
+                      <div className="font-semibold text-lg">{selectedSet.year}</div>
                     </div>
                     <div className="bg-gray-50 p-3 rounded">
                       <span className="text-gray-600 text-sm">Theme:</span>
-                      <div className="font-semibold text-lg">🎨 {selectedSet.theme_name}</div>
+                      <div className="font-semibold text-lg">{selectedSet.theme_name}</div>
                     </div>
                     <div className="bg-red-50 p-3 rounded">
                       <span className="text-gray-600 text-sm">Total Parts Count:</span>
-                      <div className="font-bold text-2xl text-red-600">🧩 {selectedSet.num_parts?.toLocaleString()}</div>
+                      <div className="font-bold text-2xl text-red-600">{selectedSet.num_parts?.toLocaleString()}</div>
                     </div>
                     <div className="bg-blue-50 p-3 rounded">
                       <span className="text-gray-600 text-sm">Unique Parts Types:</span>
-                      <div className="font-semibold text-lg">📦 {selectedSet.parts_count}</div>
+                      <div className="font-semibold text-lg">{selectedSet.parts_count}</div>
                     </div>
                   </div>
                 </div>
@@ -553,7 +552,7 @@ function LegoExplorer() {
                   </table>
                 </div>
                 <div className="mt-3 text-xs text-gray-500 text-center">
-                  💡 This data demonstrates SQL JOINs across multiple tables (sets → inventories → inventory_parts → parts → colors)
+                  This data demonstrates SQL JOINs across multiple tables (sets → inventories → inventory_parts → parts → colors)
                 </div>
               </div>
             </div>
