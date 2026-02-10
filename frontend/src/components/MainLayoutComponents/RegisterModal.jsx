@@ -16,8 +16,9 @@ import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined
 import { ThemeContext } from '../../context/ThemeContext';
 import { LanguageContext } from '../../context/LanguageContext';
 import { translations } from '../../translations/translations';
+import { register, login } from '../../api/auth';
 
-export default function RegisterModal({ open, onClose, onSwitchToLogin }) {
+export default function RegisterModal({ open, onClose, onSwitchToLogin, onAuthSuccess }) {
   const { darkMode } = useContext(ThemeContext);
   const { language } = useContext(LanguageContext);
   const t = translations[language].auth;
@@ -30,20 +31,36 @@ export default function RegisterModal({ open, onClose, onSwitchToLogin }) {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
   const handleChange = (field) => (e) => {
     setFormData({ ...formData, [field]: e.target.value });
   };
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-    // TODO: Implement actual registration logic
     if (formData.password !== formData.confirmPassword) {
       alert(t.passwordMismatch);
       return;
     }
-    console.log('Register:', formData);
-    onClose();
+    setError('');
+    setSubmitting(true);
+    try {
+      await register({
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        password: formData.password,
+      });
+      // direkt einloggen, damit Session-Cookie gesetzt wird
+      const user = await login({ email: formData.email.trim(), password: formData.password });
+      onAuthSuccess?.(user);
+      onClose();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t.somethingWentWrong || 'Fehler');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -219,6 +236,7 @@ export default function RegisterModal({ open, onClose, onSwitchToLogin }) {
             type="submit"
             fullWidth
             variant="contained"
+            disabled={submitting}
             sx={{
               mt: 3,
               mb: 2,
@@ -238,8 +256,14 @@ export default function RegisterModal({ open, onClose, onSwitchToLogin }) {
               },
             }}
           >
-            {t.signUp}
+            {submitting ? t.loading || 'Bitte warten...' : t.signUp}
           </Button>
+
+          {error && (
+            <Typography color="error" sx={{ textAlign: 'center', mt: 1 }}>
+              {error}
+            </Typography>
+          )}
 
           <Box sx={{ textAlign: 'center', mt: 2 }}>
             <Typography
