@@ -1,33 +1,45 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
 import { logger } from '../lib/logger.js';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-key';
+import { COOKIE_NAME } from '../config/env.js';
+import { query } from '../db/index.js';
 
 export interface AuthRequest extends Request {
   userId?: number;
   username?: string;
 }
 
-export const authMiddleware = (req: AuthRequest, res: Response, next: NextFunction) => {
+const getTokenFromRequest = (req: Request): string | null => {
+  const rawCookie = req.headers.cookie;
+  if (rawCookie) {
+    const cookies = Object.fromEntries(
+      rawCookie.split(';').map((pair) => {
+        const [key, ...rest] = pair.split('=');
+        return [key.trim(), decodeURIComponent(rest.join('='))];
+      })
+    );
+    if (cookies[COOKIE_NAME]) {
+      return cookies[COOKIE_NAME];
+    }
+  }
+
+  return null;
+};
+
+export const authMiddleware = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const authHeader = req.headers.authorization;
-    
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({ success: false, error: 'No token provided' });
+    const token = getTokenFromRequest(req);
+
+    if (!token) {
+      return res.status(401).json({ success: false, error: 'No session' });
     }
 
-    const token = authHeader.substring(7); // Remove 'Bearer ' prefix
-    
-    try {
-      const decoded = jwt.verify(token, JWT_SECRET) as { userId: number; username: string };
-      req.userId = decoded.userId;
-      req.username = decoded.username;
-      next();
-    } catch (error) {
-      logger.error('Invalid token:', error);
-      return res.status(401).json({ success: false, error: 'Invalid token' });
+    const session = await validateSession(token);
+    if (!session) {
+      return res.status(401).json({ success: false, error: 'Session expired or invalid' });
     }
+    req.userId = session.user_id;
+    req.username = session.username;
+    next();
   } catch (error) {
     logger.error('Auth middleware error:', error);
     return res.status(500).json({ success: false, error: 'Authentication failed' });
@@ -35,26 +47,34 @@ export const authMiddleware = (req: AuthRequest, res: Response, next: NextFuncti
 };
 
 // Optional auth middleware - doesn't fail if no token, but populates user if valid
-export const optionalAuthMiddleware = (req: AuthRequest, res: Response, next: NextFunction) => {
+export const optionalAuthMiddleware = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const authHeader = req.headers.authorization;
-    
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-      const token = authHeader.substring(7);
-      
-      try {
-        const decoded = jwt.verify(token, JWT_SECRET) as { userId: number; username: string };
-        req.userId = decoded.userId;
-        req.username = decoded.username;
-      } catch (error) {
-        // Token is invalid, but we don't fail the request
-        logger.debug('Optional auth: Invalid token');
-      }
+    const token = getTokenFromRequest(req);
+
+    if (!token) {
+      return next();
     }
-    
+
+    const session = await validateSession(token);
+    if (session) {
+      req.userId = session.user_id;
+      req.username = session.username;
+    }
     next();
   } catch (error) {
     // Continue even if there's an error
     next();
   }
 };
+
+async function validateSession(token: string) {
+  const result = await query(
+    `SELECT us.user_id, u.username
+     FROM user_sessions us
+     JOIN users u ON u.id = us.user_id
+     WHERE us.token = $1 AND us.expires_at > NOW()`,
+    [token]
+  );
+
+  return result.rows[0] || null;
+}

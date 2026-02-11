@@ -1,6 +1,6 @@
 import express, { type Request, type Response } from 'express';
 import cors from 'cors';
-import { PORT } from './config/env.js';
+import { PORT, FRONTEND_URL } from './config/env.js';
 import { logger } from './lib/logger.js';
 import { pool } from './db/index.js';
 
@@ -14,7 +14,10 @@ import collectionsRouter from './features/collections/collections.routes.js';
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: FRONTEND_URL,
+  credentials: true,
+}));
 app.use(express.json());
 
 // Request logging middleware

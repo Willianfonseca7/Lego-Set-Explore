@@ -8,12 +8,37 @@ function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
 
   const { login, register } = useAuth();
 
+  // Sync mode when parent changes
   useEffect(() => {
     setIsLogin(initialMode === 'login');
   }, [initialMode]);
+
+  // Prefill only for login mode
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const savedUsername = localStorage.getItem('auth_saved_username') || '';
+    const savedPassword = localStorage.getItem('auth_saved_password') || '';
+    const savedRemember = localStorage.getItem('auth_saved_remember') === 'true';
+
+    if (isLogin) {
+      setUsername(savedUsername);
+      setPassword(savedRemember ? savedPassword : '');
+      setRememberMe(savedRemember);
+    } else {
+      // In signup mode we start clean
+      setUsername('');
+      setPassword('');
+      setRememberMe(false);
+    }
+
+    // Email is not auto-filled for signup/login anymore
+    setEmail('');
+  }, [isOpen, isLogin]);
 
   if (!isOpen) return null;
 
@@ -32,11 +57,27 @@ function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
     setLoading(false);
 
     if (result.success) {
+      // Persist creds only for login when remember is checked
+      if (isLogin && rememberMe) {
+        localStorage.setItem('auth_saved_username', username);
+        localStorage.setItem('auth_saved_password', password);
+        localStorage.setItem('auth_saved_remember', 'true');
+      } else {
+        localStorage.removeItem('auth_saved_username');
+        localStorage.removeItem('auth_saved_password');
+        localStorage.removeItem('auth_saved_remember');
+      }
+
       onClose();
       // Reset form
-      setUsername('');
+      if (isLogin && rememberMe) {
+        setUsername(username);
+        setPassword(password);
+      } else {
+        setUsername('');
+        setPassword('');
+      }
       setEmail('');
-      setPassword('');
     } else {
       setError(result.error);
     }
@@ -45,6 +86,11 @@ function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
   const switchMode = () => {
     setIsLogin(!isLogin);
     setError('');
+    // Clear fields when switching modes to avoid showing saved login on signup
+    setUsername('');
+    setPassword('');
+    setEmail('');
+    setRememberMe(false);
   };
 
   return (
@@ -122,6 +168,21 @@ function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
             {loading ? 'Please wait...' : (isLogin ? 'Sign In' : 'Sign Up')}
           </button>
         </form>
+
+        {isLogin && (
+          <div className="flex items-center gap-2 mt-4">
+            <input
+              id="rememberMe"
+              type="checkbox"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
+              className="h-4 w-4 text-red-600 border-gray-300 rounded"
+            />
+            <label htmlFor="rememberMe" className="text-sm text-gray-700">
+              Keep me signed in please!
+            </label>
+          </div>
+        )}
 
         <div className="mt-6 text-center">
           <button
