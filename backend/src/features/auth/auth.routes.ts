@@ -175,6 +175,27 @@ router.get('/me', authMiddleware, async (req: AuthRequest, res: Response) => {
   }
 });
 
+// GET /api/auth/users - List all users (dev utility; requires login)
+router.get('/users', authMiddleware, async (_req: AuthRequest, res: Response) => {
+  if (isProduction) {
+    return res.status(403).json({ success: false, error: 'Endpoint disabled in production' });
+  }
+
+  try {
+    const result = await query(
+      'SELECT id, username, email, created_at FROM users ORDER BY id DESC LIMIT 200'
+    );
+
+    res.json({
+      success: true,
+      data: result.rows
+    });
+  } catch (error) {
+    logger.error('Error listing users:', error);
+    res.status(500).json({ success: false, error: 'Failed to list users' });
+  }
+});
+
 // POST /api/auth/logout - Clear session cookie and delete record
 router.post('/logout', authMiddleware, async (req: AuthRequest, res: Response) => {
   const rawCookie = req.headers.cookie || '';
