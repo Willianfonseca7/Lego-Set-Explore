@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-const API_BASE_URL = 'http://localhost:3000/api';
+// Use relative /api so it works in dev (Vite proxy) and Docker (nginx proxy)
+const API_BASE_URL = '/api';
 
 const AuthContext = createContext(null);
 

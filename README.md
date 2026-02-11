@@ -418,6 +418,7 @@ lsof -i :8080│   │   ├── lib/              # Utilities
 
 ├── frontend/
 
+- **[DOCKER_SETUP.md](./DOCKER_SETUP.md)** - Connect Docker Desktop to a repository and fix credential errors
 - **[PROJEKTDOKUMENTATION.md](./PROJEKTDOKUMENTATION.md)** - Technical documentation│   ├── src/
 
 - **[QUICK_START.md](./QUICK_START.md)** - Quick start guide│   │   ├── pages/

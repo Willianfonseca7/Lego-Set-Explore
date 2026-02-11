@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import AuthModal from '../components/AuthModal';
+import Header from '../components/Header';
+import Pagination from '../components/Pagination';
+import StatsBanner from '../components/StatsBanner';
+import SetPartsList from '../components/SetPartsList';
+import Footer from '../components/Footer';
 
 // Use relative path for API calls - works with proxy in dev and direct calls in production
 const API_BASE_URL = '/api';
@@ -121,69 +126,18 @@ function LegoExplorer() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
-      {/* Header with white background */}
-      <header className="bg-white shadow-lg border-b-4 border-blue-200">
-        <div className="container mx-auto px-4 py-8">
-          <div className="flex items-center justify-between gap-6">
-            <div className="flex items-center gap-6">
-              <div className="bg-white p-4 rounded-2xl">
-                <img 
-                  src="/Logo.png" 
-                  alt="Lego Logo" 
-                  className="h-40 w-40 object-contain"
-                />
-              </div>
-              <div className="text-gray-800">
-                <h1 className="text-5xl font-bold">
-                  Lego Set Explorer
-                </h1>
-                <p className="text-gray-700 mt-3 text-lg font-medium">
-                  Discover, Search, and Explore Lego Sets from Around the World
-                </p>
-              </div>
-            </div>
-            
-            {/* Auth Section */}
-            <div className="flex items-center gap-4">
-              {user ? (
-                <div className="flex items-center gap-4">
-                  <div className="text-right">
-                    <p className="text-sm font-bold text-gray-700">Welcome back!</p>
-                    <p className="text-lg font-bold text-red-600">{user.username}</p>
-                  </div>
-                  <button
-                    onClick={logout}
-                    className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-xl transition-all duration-200"
-                  >
-                    Logout
-                  </button>
-                </div>
-              ) : (
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={() => {
-                      setShowAuthModal(true);
-                      setAuthModalMode('login');
-                    }}
-                    className="bg-white hover:bg-gray-100 text-gray-800 font-bold py-3 px-8 rounded-xl transition-all duration-200 border-2 border-gray-300"
-                  >
-                    Sign In
-                  </button>
-                  <button
-                    onClick={() => {
-                      setShowAuthModal(true);
-                      setAuthModalMode('signup');
-                    }}
-                    className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-xl transition-all duration-200"
-                  >
-                    Sign Up
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header
+        user={user}
+        onLogout={logout}
+        onSignIn={() => {
+          setShowAuthModal(true);
+          setAuthModalMode('login');
+        }}
+        onSignUp={() => {
+          setShowAuthModal(true);
+          setAuthModalMode('signup');
+        }}
+      />
 
       {/* Auth Modal */}
       <AuthModal 
@@ -192,35 +146,7 @@ function LegoExplorer() {
         initialMode={authModalMode}
       />
 
-      {/* Stats Banner */}
-      {stats && (
-        <div className="bg-white shadow-lg border-b-4 border-red-100">
-          <div className="container mx-auto px-4 py-8">
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
-              <div className="bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-2 border-red-200">
-                <div className="text-2xl font-bold text-red-600 mb-1">{stats.total_sets?.toLocaleString()}</div>
-                <div className="text-xs font-semibold text-gray-700 uppercase tracking-wide">Total Sets</div>
-              </div>
-              <div className="bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-2 border-red-200">
-                <div className="text-2xl font-bold text-red-600 mb-1">{stats.total_themes}</div>
-                <div className="text-xs font-semibold text-gray-700 uppercase tracking-wide">Themes</div>
-              </div>
-              <div className="bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-2 border-red-200">
-                <div className="text-2xl font-bold text-red-600 mb-1">{stats.total_unique_parts?.toLocaleString()}</div>
-                <div className="text-xs font-semibold text-gray-700 uppercase tracking-wide">Unique Parts</div>
-              </div>
-              <div className="bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-2 border-red-200">
-                <div className="text-2xl font-bold text-red-600 mb-1">{stats.avg_parts_per_set?.toLocaleString()}</div>
-                <div className="text-xs font-semibold text-gray-700 uppercase tracking-wide">Avg Parts/Set</div>
-              </div>
-              <div className="bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-2 border-red-200">
-                <div className="text-2xl font-bold text-red-600 mb-1">{stats.earliest_year} - {stats.latest_year}</div>
-                <div className="text-xs font-semibold text-gray-700 uppercase tracking-wide">Year Range</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <StatsBanner stats={stats} />
 
       <div className="container mx-auto px-4 py-10">
         {/* Filters with enhanced styling */}
@@ -436,35 +362,13 @@ function LegoExplorer() {
               ))}
             </div>
 
-            {/* Pagination with enhanced styling */}
-            {pagination && pagination.totalPages > 1 && (
-              <div className="mt-12 flex flex-col items-center gap-5">
-                <div className="bg-white px-6 py-3 rounded-full shadow-md border-2 border-blue-200">
-                  <span className="text-sm font-bold text-gray-700">
-                    Showing <span className="text-blue-600">{((currentPage - 1) * 20) + 1}</span> - <span className="text-blue-600">{Math.min(currentPage * 20, pagination.total)}</span> of <span className="text-blue-600">{pagination.total}</span> sets
-                  </span>
-                </div>
-                <div className="flex justify-center gap-3">
-                  <button
-                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                    disabled={currentPage === 1}
-                    className="px-8 py-3 bg-white border-2 border-gray-300 rounded-xl hover:bg-gray-50 hover:border-blue-400 disabled:opacity-40 disabled:cursor-not-allowed font-bold transition-all duration-200 shadow-md hover:shadow-lg disabled:hover:shadow-md"
-                  >
-                    ← Previous
-                  </button>
-                  <div className="flex items-center px-8 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl font-bold shadow-lg">
-                    Page {currentPage} of {pagination.totalPages}
-                  </div>
-                  <button
-                    onClick={() => setCurrentPage(p => Math.min(pagination.totalPages, p + 1))}
-                    disabled={currentPage === pagination.totalPages}
-                    className="px-8 py-3 bg-white border-2 border-gray-300 rounded-xl hover:bg-gray-50 hover:border-blue-400 disabled:opacity-40 disabled:cursor-not-allowed font-bold transition-all duration-200 shadow-md hover:shadow-lg disabled:hover:shadow-md"
-                  >
-                    Next →
-                  </button>
-                </div>
-              </div>
-            )}
+            <Pagination
+              pagination={pagination}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              pageSize={20}
+              itemLabel="sets"
+            />
           </>
         )}
       </div>
@@ -530,79 +434,13 @@ function LegoExplorer() {
                 </div>
               </div>
 
-              {/* Parts List */}
-              <div>
-                <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                  📦 Complete Parts List 
-                  <span className="text-sm font-normal text-gray-500">({selectedSet.parts?.length} unique parts)</span>
-                </h3>
-                <div className="bg-gray-50 rounded-lg p-4 max-h-96 overflow-y-auto">
-                  <table className="w-full text-sm">
-                    <thead className="sticky top-0 bg-gray-200">
-                      <tr className="text-left border-b-2 border-gray-300">
-                        <th className="py-3 px-3 font-semibold">Part #</th>
-                        <th className="py-3 px-3 font-semibold">Part Name</th>
-                        <th className="py-3 px-3 font-semibold">Color</th>
-                        <th className="py-3 px-3 text-right font-semibold">Quantity</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {selectedSet.parts?.map((part, idx) => (
-                        <tr key={idx} className="border-b hover:bg-white transition">
-                          <td className="py-3 px-3 font-mono text-xs text-blue-600">{part.part_num}</td>
-                          <td className="py-3 px-3 font-medium">{part.part_name}</td>
-                          <td className="py-3 px-3">
-                            <div className="flex items-center gap-2">
-                              <div
-                                className="w-5 h-5 rounded border-2 border-gray-400 shadow-sm"
-                                style={{ backgroundColor: `#${part.rgb}` }}
-                                title={`RGB: #${part.rgb}`}
-                              ></div>
-                              <span className="text-sm">{part.color_name}</span>
-                              {part.is_trans && <span className="text-xs text-purple-600">(transparent)</span>}
-                            </div>
-                          </td>
-                          <td className="py-3 px-3 text-right">
-                            <span className="font-bold text-lg">{part.quantity}×</span>
-                            {part.is_spare && <span className="text-xs text-green-600 ml-2">(spare)</span>}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                <div className="mt-3 text-xs text-gray-500 text-center">
-                  This data demonstrates SQL JOINs across multiple tables (sets → inventories → inventory_parts → parts → colors)
-                </div>
-              </div>
+              <SetPartsList parts={selectedSet.parts} />
             </div>
           </div>
         </div>
       )}
 
-      {/* Footer */}
-      <footer className="bg-white border-t-4 border-blue-200 mt-12">
-        <div className="container mx-auto px-4 py-8">
-          <div className="text-center">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <img 
-                src="/Logo.png" 
-                alt="Lego Logo" 
-                className="h-12 w-12 object-contain"
-              />
-              <h3 className="text-2xl font-bold text-gray-800">Lego Set Explorer</h3>
-            </div>
-            <p className="text-gray-600 mb-4 max-w-2xl mx-auto">
-              Discover, Search, and Explore Lego Sets from Around the World
-            </p>
-            <div className="border-t border-gray-200 pt-4 mt-4">
-              <p className="text-sm text-gray-500">
-                © {new Date().getFullYear()} Lego Set Explorer. Built with React, Node.js, PostgreSQL & Docker.
-              </p>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
