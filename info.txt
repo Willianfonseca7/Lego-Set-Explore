@@ -1,6 +1,0 @@
-lego_projekt/
-├── .git/           ✅ (Git repository)
-├── backend/        ✅ (Express API with PostgreSQL)
-├── frontend/       ✅ (React app with Vite)
-├── node_modules/   ✅ (Dependencies)
-└── [config files]  ✅ (docker-compose.yml, package.json, etc.)

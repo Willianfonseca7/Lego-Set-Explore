@@ -19,7 +19,23 @@ INSERT INTO themes (id, name, parent_id) VALUES
 (15, 'The Skywalker Saga', 3),
 (16, 'The Mandalorian', 3),
 (17, 'Avengers', 7),
-(18, 'Spider-Man', 7);
+(18, 'Spider-Man', 7),
+(19, 'Jurassic World', NULL),
+(20, 'Disney', NULL),
+(21, 'Batman', NULL),
+(22, 'Speed Champions', NULL),
+(23, 'Minecraft', NULL),
+(24, 'Monkie Kid', NULL),
+(25, 'Classic', NULL),
+(26, 'DUPLO', NULL),
+(27, 'Botanical Collection', NULL),
+(28, 'Art', NULL),
+(29, 'Lord of the Rings', NULL),
+(30, 'Super Mario', NULL),
+(31, 'Frozen', 20),
+(32, 'Mickey Mouse', 20),
+(33, 'The Dark Knight', 21),
+(34, 'Adventures with Luigi', 30);
 
 -- Insert Colors
 INSERT INTO colors (id, name, rgb, is_trans) VALUES
@@ -75,7 +91,65 @@ INSERT INTO sets (set_num, name, year, theme_id, num_parts, img_url) VALUES
 ('42131-1', 'App-Controlled Cat D11 Bulldozer', 2021, 2, 3854, 'https://images.brickset.com/sets/images/42131-1.jpg'),
 ('42139-1', 'All-Terrain Vehicle', 2021, 2, 764, 'https://images.brickset.com/sets/images/42139-1.jpg'),
 ('71741-1', 'Ninjago City Gardens', 2021, 6, 5685, 'https://images.brickset.com/sets/images/71741-1.jpg'),
-('41704-1', 'Main Street Building', 2023, 5, 1682, 'https://images.brickset.com/sets/images/41704-1.jpg');
+('41704-1', 'Main Street Building', 2023, 5, 1682, 'https://images.brickset.com/sets/images/41704-1.jpg'),
+-- Jurassic World Sets
+('76948-1', 'T. rex & Atrociraptor Dinosaur Breakout', 2022, 19, 466, 'https://images.brickset.com/sets/images/76948-1.jpg'),
+('76949-1', 'Giganotosaurus & Therizinosaurus Attack', 2022, 19, 810, 'https://images.brickset.com/sets/images/76949-1.jpg'),
+('76940-1', 'T. rex Dinosaur Fossil Display', 2021, 19, 198, 'https://images.brickset.com/sets/images/76940-1.jpg'),
+('76941-1', 'Indominus Rex vs. Ankylosaurus', 2021, 19, 537, 'https://images.brickset.com/sets/images/76941-1.jpg'),
+('76942-1', 'Baryonyx Dinosaur Boat Escape', 2021, 19, 308, 'https://images.brickset.com/sets/images/76942-1.jpg'),
+-- Disney Sets
+('43222-1', 'Disney Castle', 2023, 20, 4820, 'https://images.brickset.com/sets/images/43222-1.jpg'),
+('43230-1', 'Walt Disney Tribute Camera', 2023, 20, 811, 'https://images.brickset.com/sets/images/43230-1.jpg'),
+('43197-1', 'The Ice Castle', 2021, 31, 1709, 'https://images.brickset.com/sets/images/43197-1.jpg'),
+('43179-1', 'Mickey Mouse and Minnie Mouse Buildable Characters', 2020, 32, 1739, 'https://images.brickset.com/sets/images/43179-1.jpg'),
+('21317-1', 'Steamboat Willie', 2019, 32, 751, 'https://images.brickset.com/sets/images/21317-1.jpg'),
+('43232-1', 'Frozen Ice Castle', 2023, 31, 798, 'https://images.brickset.com/sets/images/43232-1.jpg'),
+-- Batman / DC Sets
+('76240-1', 'Batmobile Tumbler', 2023, 21, 2049, 'https://images.brickset.com/sets/images/76240-1.jpg'),
+('76023-1', 'The Tumbler', 2014, 21, 1869, 'https://images.brickset.com/sets/images/76023-1.jpg'),
+('76181-1', 'Batmobile: Pursuit of The Joker', 2021, 21, 136, 'https://images.brickset.com/sets/images/76181-1.jpg'),
+('76238-1', 'Classic TV Series Batman Cowl', 2023, 21, 3423, 'https://images.brickset.com/sets/images/76238-1.jpg'),
+('76239-1', 'Batmobile Tumbler: Scarecrow Showdown', 2023, 21, 422, 'https://images.brickset.com/sets/images/76239-1.jpg'),
+-- Speed Champions
+('76911-1', 'BMW M4 GT3 & BMW M Hybrid V8', 2023, 22, 442, 'https://images.brickset.com/sets/images/76911-1.jpg'),
+('76909-1', 'Mercedes-AMG F1 W12 E Performance & Mercedes-AMG Project One', 2022, 22, 564, 'https://images.brickset.com/sets/images/76909-1.jpg'),
+('76912-1', 'F1 Ferrari SF-23', 2023, 22, 184, 'https://images.brickset.com/sets/images/76912-1.jpg'),
+('76913-1', '2023 McLaren Formula 1 Race Car', 2023, 22, 188, 'https://images.brickset.com/sets/images/76913-1.jpg'),
+('76914-1', 'Aston Martin Valkyrie AMR Pro and Aston Martin Vantage GT3', 2023, 22, 592, 'https://images.brickset.com/sets/images/76914-1.jpg'),
+('76915-1', 'Pagani Utopia', 2023, 22, 181, 'https://images.brickset.com/sets/images/76915-1.jpg'),
+('76916-1', 'Lamborghini Huracan Tecnica', 2023, 22, 176, 'https://images.brickset.com/sets/images/76916-1.jpg'),
+-- Minecraft Sets
+('21190-1', 'The Abandoned Village', 2023, 23, 372, 'https://images.brickset.com/sets/images/21190-1.jpg'),
+('21246-1', 'The Deep Dark Battle', 2023, 23, 584, 'https://images.brickset.com/sets/images/21246-1.jpg'),
+('21189-1', 'The Skeleton Dungeon', 2022, 23, 364, 'https://images.brickset.com/sets/images/21189-1.jpg'),
+('21188-1', 'The Llama Village', 2022, 23, 1178, 'https://images.brickset.com/sets/images/21188-1.jpg'),
+('21187-1', 'The Red Barn', 2022, 23, 951, 'https://images.brickset.com/sets/images/21187-1.jpg'),
+('21185-1', 'The Nether Bastion', 2022, 23, 300, 'https://images.brickset.com/sets/images/21185-1.jpg'),
+-- Botanical Collection
+('10329-1', 'Tiny Plants', 2023, 27, 758, 'https://images.brickset.com/sets/images/10329-1.jpg'),
+('10311-1', 'Orchid', 2023, 27, 608, 'https://images.brickset.com/sets/images/10311-1.jpg'),
+('10280-1', 'Flower Bouquet', 2021, 27, 756, 'https://images.brickset.com/sets/images/10280-1.jpg'),
+('10281-1', 'Bonsai Tree', 2021, 27, 878, 'https://images.brickset.com/sets/images/10281-1.jpg'),
+('10313-1', 'Wildflower Bouquet', 2023, 27, 939, 'https://images.brickset.com/sets/images/10313-1.jpg'),
+-- Classic Sets
+('11031-1', 'Monkey Island', 2023, 25, 239, 'https://images.brickset.com/sets/images/11031-1.jpg'),
+('11035-1', 'Creative Space Planets', 2023, 25, 450, 'https://images.brickset.com/sets/images/11035-1.jpg'),
+('11021-1', '90 Years of Play', 2022, 25, 1000, 'https://images.brickset.com/sets/images/11021-1.jpg'),
+('11033-1', 'Creative Fantasy Universe', 2023, 25, 650, 'https://images.brickset.com/sets/images/11033-1.jpg'),
+-- Art Sets
+('31210-1', 'Modern Art', 2023, 28, 805, 'https://images.brickset.com/sets/images/31210-1.jpg'),
+('21226-1', 'Art Project - Create Together', 2022, 28, 4138, 'https://images.brickset.com/sets/images/21226-1.jpg'),
+('31203-1', 'World Map', 2021, 28, 11695, 'https://images.brickset.com/sets/images/31203-1.jpg'),
+-- Lord of the Rings
+('10316-1', 'Rivendell', 2023, 29, 6167, 'https://images.brickset.com/sets/images/10316-1.jpg'),
+('40638-1', 'Legolas Greenleaf', 2023, 29, 167, 'https://images.brickset.com/sets/images/40638-1.jpg'),
+('10333-1', 'Lord of the Rings: Barad-dûr', 2024, 29, 5471, 'https://images.brickset.com/sets/images/10333-1.jpg'),
+-- Super Mario
+('71411-1', 'The Mighty Bowser', 2022, 30, 2807, 'https://images.brickset.com/sets/images/71411-1.jpg'),
+('71426-1', 'Bowser''s Muscle Car Expansion Set', 2023, 30, 458, 'https://images.brickset.com/sets/images/71426-1.jpg'),
+('71403-1', 'Adventures with Peach Starter Course', 2023, 30, 354, 'https://images.brickset.com/sets/images/71403-1.jpg'),
+('71404-1', 'Goomba''s Playground Expansion Set', 2023, 34, 215, 'https://images.brickset.com/sets/images/71404-1.jpg');
 
 -- Insert sample Parts
 INSERT INTO parts (part_num, name, part_cat_id) VALUES
