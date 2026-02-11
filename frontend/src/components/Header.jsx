@@ -1,4 +1,5 @@
 import React from 'react';
+import Logo from './Logo';
 import AuthSection from './AuthSection';
 
 function Header({ user, onLogout, onSignIn, onSignUp }) {
