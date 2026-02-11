@@ -15,52 +15,38 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem('token'));
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (token) {
-      // Fetch current user
-      fetch(`${API_BASE_URL}/auth/me`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
+    // Fetch current user using session cookie (if present)
+    fetch(`${API_BASE_URL}/auth/me`, {
+      credentials: 'include',
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setUser(data.data);
         }
       })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            setUser(data.data);
-          } else {
-            // Token is invalid
-            localStorage.removeItem('token');
-            setToken(null);
-          }
-        })
-        .catch(err => {
-          console.error('Error fetching user:', err);
-          localStorage.removeItem('token');
-          setToken(null);
-        })
-        .finally(() => setLoading(false));
-    } else {
-      setLoading(false);
-    }
-  }, [token]);
+      .catch(err => {
+        console.error('Error fetching user:', err);
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
   const login = async (username, password) => {
     try {
       const res = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ username, password })
       });
 
       const data = await res.json();
 
       if (data.success) {
-        setToken(data.data.token);
         setUser(data.data.user);
-        localStorage.setItem('token', data.data.token);
         return { success: true };
       } else {
         return { success: false, error: data.error };
@@ -75,15 +61,14 @@ export const AuthProvider = ({ children }) => {
       const res = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ username, email, password })
       });
 
       const data = await res.json();
 
       if (data.success) {
-        setToken(data.data.token);
         setUser(data.data.user);
-        localStorage.setItem('token', data.data.token);
         return { success: true };
       } else {
         return { success: false, error: data.error };
@@ -94,13 +79,16 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    setToken(null);
-    setUser(null);
-    localStorage.removeItem('token');
+    fetch(`${API_BASE_URL}/auth/logout`, {
+      method: 'POST',
+      credentials: 'include',
+    }).finally(() => {
+      setUser(null);
+    });
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

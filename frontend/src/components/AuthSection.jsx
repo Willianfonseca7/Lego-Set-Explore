@@ -6,7 +6,7 @@ function AuthSection({ user, onLogout, onSignIn, onSignUp }) {
       {user ? (
         <div className="flex items-center gap-4">
           <div className="text-right">
-            <p className="text-sm font-bold text-gray-700">Welcome back!</p>
+            <p className="text-sm font-bold text-gray-700">Willkommen!</p>
             <p className="text-lg font-bold text-red-600">{user.username}</p>
           </div>
           <button
