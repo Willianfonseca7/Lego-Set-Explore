@@ -9,5 +9,11 @@
     "dev:backend": "npm --prefix backend run dev",
     "build:backend": "npm --prefix backend run build",
     "lint:backend": "npm --prefix backend run lint"
+  },
+  "devDependencies": {
+    "@types/node": "^25.2.3"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.4"
   }
 }
