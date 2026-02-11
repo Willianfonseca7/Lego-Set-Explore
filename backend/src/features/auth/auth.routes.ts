@@ -1,9 +1,9 @@
 import { Router, Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { query } from '../db/index.js';
-import { logger } from '../lib/logger.js';
-import { authMiddleware, AuthRequest } from '../middleware/auth.js';
+import { query } from '../../db/index.js';
+import { logger } from '../../lib/logger.js';
+import { authMiddleware, AuthRequest } from '../../middleware/auth.js';
 
 const router = Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-key';

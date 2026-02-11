@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
-import { query } from '../db/index.js';
-import { logger } from '../lib/logger.js';
+import { query } from '../../db/index.js';
+import { logger } from '../../lib/logger.js';
 
 const router = Router();
 

@@ -5,11 +5,11 @@ import { logger } from './lib/logger.js';
 import { pool } from './db/index.js';
 
 // Import routes
-import setsRouter from './routes/sets.js';
-import themesRouter from './routes/themes.js';
-import statsRouter from './routes/stats.js';
-import authRouter from './routes/auth.js';
-import collectionsRouter from './routes/collections.js';
+import setsRouter from './features/sets/sets.routes.js';
+import themesRouter from './features/themes/themes.routes.js';
+import statsRouter from './features/stats/stats.routes.js';
+import authRouter from './features/auth/auth.routes.js';
+import collectionsRouter from './features/collections/collections.routes.js';
 
 const app = express();
 
