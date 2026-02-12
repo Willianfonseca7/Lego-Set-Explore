@@ -1,12 +1,19 @@
 import { Router, Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import { v4 as uuidv4 } from 'uuid';
 import { query } from '../../db/index.js';
 import { logger } from '../../lib/logger.js';
 import { authMiddleware, AuthRequest } from '../../middleware/auth.js';
+import { COOKIE_NAME, NODE_ENV, SESSION_DAYS } from '../../config/env.js';
 
 const router = Router();
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-key';
+const isProduction = NODE_ENV === 'production';
+const cookieOptions = {
+  httpOnly: true,
+  sameSite: 'lax' as const,
+  secure: isProduction,
+  maxAge: SESSION_DAYS * 24 * 60 * 60 * 1000,
+};
 
 // POST /api/auth/register - Register a new user
 router.post('/register', async (req: Request, res: Response) => {
@@ -52,12 +59,9 @@ router.post('/register', async (req: Request, res: Response) => {
 
     const user = result.rows[0];
 
-    // Generate JWT token
-    const token = jwt.sign(
-      { userId: user.id, username: user.username },
-      JWT_SECRET,
-      { expiresIn: '7d' }
-    );
+    // Create session
+    const { token } = await createSession(user.id);
+    res.cookie(COOKIE_NAME, token, cookieOptions);
 
     logger.info(`User registered: ${username}`);
 
@@ -69,8 +73,7 @@ router.post('/register', async (req: Request, res: Response) => {
           username: user.username,
           email: user.email,
           createdAt: user.created_at
-        },
-        token
+        }
       }
     });
   } catch (error) {
@@ -117,12 +120,9 @@ router.post('/login', async (req: Request, res: Response) => {
       });
     }
 
-    // Generate JWT token
-    const token = jwt.sign(
-      { userId: user.id, username: user.username },
-      JWT_SECRET,
-      { expiresIn: '7d' }
-    );
+    // Create session
+    const { token } = await createSession(user.id);
+    res.cookie(COOKIE_NAME, token, cookieOptions);
 
     logger.info(`User logged in: ${username}`);
 
@@ -134,8 +134,7 @@ router.post('/login', async (req: Request, res: Response) => {
           username: user.username,
           email: user.email,
           createdAt: user.created_at
-        },
-        token
+        }
       }
     });
   } catch (error) {
@@ -175,5 +174,63 @@ router.get('/me', authMiddleware, async (req: AuthRequest, res: Response) => {
     res.status(500).json({ success: false, error: 'Failed to get user' });
   }
 });
+
+// GET /api/auth/users - List all users (dev utility; requires login)
+router.get('/users', authMiddleware, async (_req: AuthRequest, res: Response) => {
+  if (isProduction) {
+    return res.status(403).json({ success: false, error: 'Endpoint disabled in production' });
+  }
+
+  try {
+    const result = await query(
+      'SELECT id, username, email, created_at FROM users ORDER BY id DESC LIMIT 200'
+    );
+
+    res.json({
+      success: true,
+      data: result.rows
+    });
+  } catch (error) {
+    logger.error('Error listing users:', error);
+    res.status(500).json({ success: false, error: 'Failed to list users' });
+  }
+});
+
+// POST /api/auth/logout - Clear session cookie and delete record
+router.post('/logout', authMiddleware, async (req: AuthRequest, res: Response) => {
+  const rawCookie = req.headers.cookie || '';
+  const cookies = Object.fromEntries(
+    rawCookie.split(';').map((pair) => {
+      const [key, ...rest] = pair.split('=');
+      return [key.trim(), decodeURIComponent(rest.join('='))];
+    })
+  );
+  const token = cookies[COOKIE_NAME];
+
+  if (token) {
+    await query('DELETE FROM user_sessions WHERE token = $1', [token]);
+  }
+
+  res.clearCookie(COOKIE_NAME, {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: isProduction,
+  });
+
+  res.json({
+    success: true,
+    message: 'Logged out successfully'
+  });
+});
+
+async function createSession(userId: number) {
+  const token = uuidv4();
+  await query(
+    `INSERT INTO user_sessions (user_id, token, expires_at)
+     VALUES ($1, $2, NOW() + ($3 || ' days')::interval)`,
+    [userId, token, SESSION_DAYS]
+  );
+  return { token };
+}
 
 export default router;
