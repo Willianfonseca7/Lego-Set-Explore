@@ -1,6 +1,6 @@
 import express, { type Request, type Response } from 'express';
 import cors from 'cors';
-import { FRONTEND_URL } from './utils/env.js';
+import { FRONTEND_URL, NODE_ENV } from './utils/env.js';
 import { logger } from './lib/logger.js';
 import { pool } from './db/pool.js';
 import setsRouter from './modules/sets/sets.routes.js';
@@ -12,8 +12,13 @@ import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
 
+// Allow both Vite dev (5173) and Docker frontend (8080) in development so sign-in works from either
+const corsOrigins = NODE_ENV === 'development'
+  ? ['http://localhost:5173', 'http://localhost:8080']
+  : FRONTEND_URL;
+
 // Core middleware
-app.use(cors({ origin: FRONTEND_URL, credentials: true }));
+app.use(cors({ origin: corsOrigins, credentials: true }));
 app.use(express.json());
 // Prevent cached authenticated pages from being restored via back/forward navigation
 app.use((_, res, next) => {
