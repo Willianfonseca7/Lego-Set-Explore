@@ -18,7 +18,7 @@ services:
     ports:
       - "3001:3000"
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
       - DATABASE_URL=postgresql://lego_user:lego_password@db:5432/lego_explorer
       - FRONTEND_URL=http://localhost:8080
     depends_on:
