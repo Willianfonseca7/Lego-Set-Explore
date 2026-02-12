@@ -4,17 +4,9 @@ function AuthSection({ user, onLogout, onSignIn, onSignUp }) {
   return (
     <div className="flex items-center gap-4">
       {user ? (
-        <div className="flex items-center gap-4">
-          <div className="text-right">
-            <p className="text-sm font-bold text-gray-700">Willkommen!</p>
-            <p className="text-lg font-bold text-red-600">{user.username}</p>
-          </div>
-          <button
-            onClick={onLogout}
-            className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-xl transition-all duration-200"
-          >
-            Logout
-          </button>
+        <div className="flex flex-row items-center justify-center gap-4">
+          <p className="text-sm font-bold text-gray-700">Welcome back, <span className="text-red-600">{user.username}</span>!</p>
+          <button onClick={onLogout} className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-xl transition-all duration-200">Logout</button>
         </div>
       ) : (
         <div className="flex items-center gap-3">
