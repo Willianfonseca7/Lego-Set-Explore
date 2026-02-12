@@ -4,15 +4,18 @@ import { v4 as uuidv4 } from 'uuid';
 import { query } from '../../db/pool.js';
 import { logger } from '../../lib/logger.js';
 import { authMiddleware, AuthRequest } from '../../middleware/auth.js';
-import { COOKIE_NAME, NODE_ENV, SESSION_DAYS } from '../../utils/env.js';
+import { COOKIE_NAME, NODE_ENV, SESSION_DAYS, FRONTEND_URL } from '../../utils/env.js';
 
 const router = Router();
 const isProduction = NODE_ENV === 'production';
+
+const isLocalhost = FRONTEND_URL.includes('localhost');
 const cookieOptions = {
   httpOnly: true,
   sameSite: 'lax' as const,
-  secure: isProduction,
+  secure: isProduction && !isLocalhost,
   maxAge: SESSION_DAYS * 24 * 60 * 60 * 1000,
+  path: '/',
 };
 
 // POST /api/auth/register - Register a new user
@@ -211,12 +214,7 @@ router.post('/logout', authMiddleware, async (req: AuthRequest, res: Response) =
     await query('DELETE FROM user_sessions WHERE token = $1', [token]);
   }
 
-  res.clearCookie(COOKIE_NAME, {
-    httpOnly: true,
-    sameSite: 'lax',
-    secure: isProduction,
-    path: '/',
-  });
+  res.clearCookie(COOKIE_NAME, cookieOptions);
   res.setHeader('Clear-Site-Data', '"cache","cookies"');
 
   res.json({
