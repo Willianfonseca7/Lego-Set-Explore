@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { logger } from '../lib/logger.js';
-import { COOKIE_NAME } from '../config/env.js';
-import { query } from '../db/index.js';
+import { COOKIE_NAME } from '../utils/env.js';
+import { query } from '../db/pool.js';
 
 export interface AuthRequest extends Request {
   userId?: number;

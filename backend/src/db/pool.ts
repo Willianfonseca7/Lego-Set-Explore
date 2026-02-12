@@ -1,6 +1,6 @@
 import pkg from 'pg';
 const { Pool } = pkg;
-import { DATABASE_URL } from '../config/env.js';
+import { DATABASE_URL } from '../utils/env.js';
 import { logger } from '../lib/logger.js';
 
 // Create PostgreSQL connection pool
