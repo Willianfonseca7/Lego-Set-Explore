@@ -1,10 +1,10 @@
 import { Router, Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
-import { query } from '../../db/index.js';
+import { query } from '../../db/pool.js';
 import { logger } from '../../lib/logger.js';
 import { authMiddleware, AuthRequest } from '../../middleware/auth.js';
-import { COOKIE_NAME, NODE_ENV, SESSION_DAYS } from '../../config/env.js';
+import { COOKIE_NAME, NODE_ENV, SESSION_DAYS } from '../../utils/env.js';
 
 const router = Router();
 const isProduction = NODE_ENV === 'production';
