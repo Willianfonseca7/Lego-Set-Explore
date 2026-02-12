@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
@@ -9,7 +10,8 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',
+        // Default 3001 = backend in Docker. For local backend on 3000 create .env.development.local: VITE_PROXY_TARGET=http://localhost:3000
+        target: process.env.VITE_PROXY_TARGET || 'http://localhost:3001',
         changeOrigin: true,
         secure: false,
         ws: true,
