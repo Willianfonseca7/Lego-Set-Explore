@@ -2,6 +2,7 @@ import React from 'react';
 import Logo from './Logo';
 
 export default function Footer() {
+export default function Footer() {
   return (
     <footer className="bg-white border-t-4 border-blue-200 mt-12">
             <Logo />

@@ -6,6 +6,7 @@ import Pagination from '../components/Pagination';
 import StatsBanner from '../components/StatsBanner';
 import SetPartsList from '../components/SetPartsList';
 import Footer from '../components/Footer';
+import HeroSection from '../components/HeroSection';
 
 // Use relative path for API calls - works with proxy in dev and direct calls in production
 const API_BASE_URL = '/api';
@@ -138,6 +139,7 @@ function LegoExplorer() {
           setAuthModalMode('signup');
         }}
       />
+      <HeroSection />
 
       {/* Auth Modal */}
       <AuthModal 
