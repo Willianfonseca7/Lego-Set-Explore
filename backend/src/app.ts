@@ -15,6 +15,13 @@ const app = express();
 // Core middleware
 app.use(cors({ origin: FRONTEND_URL, credentials: true }));
 app.use(express.json());
+// Prevent cached authenticated pages from being restored via back/forward navigation
+app.use((_, res, next) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  next();
+});
 
 // Simple request logger
 app.use((req, _res, next) => {
@@ -53,4 +60,3 @@ app.use((req: Request, res: Response) => {
 app.use(errorHandler);
 
 export default app;
-

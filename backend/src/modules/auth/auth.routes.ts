@@ -215,7 +215,9 @@ router.post('/logout', authMiddleware, async (req: AuthRequest, res: Response) =
     httpOnly: true,
     sameSite: 'lax',
     secure: isProduction,
+    path: '/',
   });
+  res.setHeader('Clear-Site-Data', '"cache","cookies"');
 
   res.json({
     success: true,
