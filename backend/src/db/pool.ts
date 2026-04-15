@@ -2,16 +2,21 @@ import pkg from 'pg';
 const { Pool } = pkg;
 import { DATABASE_URL } from '../utils/env.js';
 import { logger } from '../lib/logger.js';
+import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // Create PostgreSQL connection pool
 export const pool = new Pool({
   connectionString: DATABASE_URL,
-  max: 20, // Maximum number of clients in the pool
+  max: 20,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
 });
 
-// Test database connection
 pool.on('connect', () => {
   logger.info('Database connected successfully');
 });
@@ -21,26 +26,38 @@ pool.on('error', (err) => {
   process.exit(-1);
 });
 
-// Ensure critical tables exist (idempotent)
-async function ensureSessionTable() {
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS user_sessions (
-      id SERIAL PRIMARY KEY,
-      user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-      token UUID NOT NULL UNIQUE,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      expires_at TIMESTAMP NOT NULL
+// Auto-initialize schema and seed on first startup
+async function initDatabase() {
+  const client = await pool.connect();
+  try {
+    // Check if schema already exists
+    const { rows } = await client.query(
+      `SELECT to_regclass('public.themes') AS exists`
     );
-  `);
 
-  await pool.query(`CREATE INDEX IF NOT EXISTS idx_user_sessions_user_id ON user_sessions(user_id);`);
-  await pool.query(`CREATE INDEX IF NOT EXISTS idx_user_sessions_token ON user_sessions(token);`);
+    if (!rows[0].exists) {
+      logger.info('Initializing database schema...');
+      const schema = readFileSync(join(__dirname, '../../db-init/01-schema.sql'), 'utf-8');
+      await client.query(schema);
+      logger.info('Schema created.');
+    }
+
+    // Check if seed data exists
+    const { rows: seedCheck } = await client.query('SELECT COUNT(*) FROM themes');
+    if (parseInt(seedCheck[0].count) === 0) {
+      logger.info('Seeding database...');
+      const seed = readFileSync(join(__dirname, '../../db-init/02-seed.sql'), 'utf-8');
+      await client.query(seed);
+      logger.info('Seed data inserted.');
+    }
+  } catch (err) {
+    logger.error('Database initialization error', err);
+  } finally {
+    client.release();
+  }
 }
 
-// Run bootstrap tasks
-ensureSessionTable().catch((err) => {
-  logger.error('Failed to ensure user_sessions table exists', err);
-});
+initDatabase();
 
 // Helper function to execute queries
 export async function query(text: string, params?: any[]) {
