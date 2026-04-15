@@ -8,8 +8,8 @@ import SetPartsList from '../components/SetPartsList';
 import Footer from '../components/Footer';
 import HeroSection from '../components/HeroSection';
 
-// Use relative path for API calls - works with proxy in dev and direct calls in production
-const API_BASE_URL = '/api';
+// Em dev usa proxy do Vite (/api). Em producao usa VITE_API_URL (ex: https://backend.railway.app/api)
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 function LegoExplorer() {
   const { user, logout } = useAuth();
