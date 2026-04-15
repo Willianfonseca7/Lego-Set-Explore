@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-// Use relative /api so it works in dev (Vite proxy) and Docker (nginx proxy)
-const API_BASE_URL = '/api';
+// Em dev usa proxy do Vite (/api). Em producao usa VITE_API_URL (ex: https://backend.railway.app/api)
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 const AuthContext = createContext(null);
 
