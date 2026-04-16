@@ -15,7 +15,7 @@ const app = express();
 // Allow both Vite dev (5173) and Docker frontend (8080) in development so sign-in works from either
 const corsOrigins = NODE_ENV === 'development'
   ? ['http://localhost:5173', 'http://localhost:8080']
-  : FRONTEND_URL;
+  : [FRONTEND_URL, /\.vercel\.app$/, /\.railway\.app$/];
 
 // Core middleware
 app.use(cors({ origin: corsOrigins, credentials: true }));
