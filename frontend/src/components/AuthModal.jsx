@@ -22,12 +22,10 @@ function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
     if (!isOpen) return;
 
     const savedUsername = localStorage.getItem('auth_saved_username') || '';
-    const savedPassword = localStorage.getItem('auth_saved_password') || '';
     const savedRemember = localStorage.getItem('auth_saved_remember') === 'true';
 
     if (isLogin) {
       setUsername(savedUsername);
-      setPassword(savedRemember ? savedPassword : '');
       setRememberMe(savedRemember);
     } else {
       // In signup mode we start clean
@@ -60,20 +58,15 @@ function AuthModal({ isOpen, onClose, initialMode = 'login' }) {
       // Persist creds only for login when remember is checked
       if (isLogin && rememberMe) {
         localStorage.setItem('auth_saved_username', username);
-        localStorage.setItem('auth_saved_password', password);
         localStorage.setItem('auth_saved_remember', 'true');
       } else {
         localStorage.removeItem('auth_saved_username');
-        localStorage.removeItem('auth_saved_password');
         localStorage.removeItem('auth_saved_remember');
       }
 
       onClose();
       // Reset form
-      if (isLogin && rememberMe) {
-        setUsername(username);
-        setPassword(password);
-      } else {
+      if (!rememberMe) {
         setUsername('');
         setPassword('');
       }

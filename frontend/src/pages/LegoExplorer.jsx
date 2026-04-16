@@ -79,10 +79,8 @@ function LegoExplorer() {
       try {
         const res = await fetch(`${API_BASE_URL}/sets?${params}`);
         const data = await res.json();
-        console.log('API Response:', data); // Debug log
-        
+
         if (isMounted && data.success) {
-          console.log('Setting sets:', data.data); // Debug log
           setSets(data.data);
           setPagination(data.pagination);
         }
@@ -90,7 +88,6 @@ function LegoExplorer() {
         console.error('Error fetching sets:', err);
       } finally {
         if (isMounted) {
-          console.log('Setting loading to false'); // Debug log
           setLoading(false);
         }
       }
