@@ -2,6 +2,8 @@
 
 Full‑Stack‑Webapp zum Suchen, Filtern und Analysieren von LEGO‑Sets. Fokus auf performante Datenbank‑Queries, saubere API‑Struktur und eine moderne, responsive Oberfläche.
 
+**Live Demo:** [lego-set-explore.vercel.app](https://lego-set-explore.vercel.app)
+
 ---
 
 ## Vorschau
@@ -18,6 +20,7 @@ Full‑Stack‑Webapp zum Suchen, Filtern und Analysieren von LEGO‑Sets. Fokus
 | Backend | Node.js, Express, TypeScript |
 | Datenbank | PostgreSQL 16 |
 | Infrastruktur | Docker Compose, Nginx |
+| Deployment | Vercel (Frontend), Railway (Backend + DB) |
 
 ---
 
@@ -40,7 +43,7 @@ Lego-Set-Explore/
 │   ├── src/
 │   │   ├── modules/       # Sets, Themes, Stats, Auth, Collections
 │   │   ├── middleware/    # Auth, Error Handling
-│   │   └── db/            # PostgreSQL Connection Pooling
+│   │   └── db/            # PostgreSQL Connection Pooling + Auto-Init
 │   └── db-init/           # Schema SQL + Seed-Daten
 ├── frontend/              # React + Vite SPA
 │   └── src/
@@ -49,6 +52,18 @@ Lego-Set-Explore/
 │       └── context/
 └── docker-compose.yml
 ```
+
+---
+
+## Deployment
+
+| Dienst | Plattform | URL |
+|--------|-----------|-----|
+| Frontend | Vercel | [lego-set-explore.vercel.app](https://lego-set-explore.vercel.app) |
+| Backend API | Railway | `lego-set-explore-production.up.railway.app` |
+| Datenbank | Railway PostgreSQL | — |
+
+> Das Backend initialisiert Schema und Seed‑Daten automatisch beim ersten Start.
 
 ---
 
@@ -72,10 +87,8 @@ docker compose up -d --build
 # 1. Datenbank einrichten
 psql -U postgres -c "CREATE USER lego_user WITH PASSWORD 'ihr_passwort';"
 psql -U postgres -c "CREATE DATABASE lego_explorer OWNER lego_user;"
-psql -U lego_user -d lego_explorer -f backend/db-init/01-schema.sql
-psql -U lego_user -d lego_explorer -f backend/db-init/02-seed.sql
 
-# 2. Backend starten
+# 2. Backend starten (Schema + Seed werden automatisch ausgeführt)
 cd backend
 cp .env.example .env   # Variablen anpassen
 npm ci && npm run build && npm start
@@ -107,7 +120,7 @@ cp .env.example .env
 
 ## Meine Beiträge (Willian Fonseca)
 
-- **DB Connection Pooling** — `backend/src/db/pool.ts`
+- **DB Connection Pooling & Auto‑Init** — `backend/src/db/pool.ts`
 - **Advanced Filtering & Pagination** — `backend/src/modules/sets/sets.routes.ts`
 - **Graceful Shutdown** — `backend/src/server.ts`
 
